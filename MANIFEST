@@ -20,7 +20,6 @@ bin/dmarc_send_reports
 bin/dmarc_view_reports
 bin/install_deps.pl
 dist.ini
-effective_tld_names.dat
 example/report_cgi.png
 lib/Mail/DMARC.pm
 lib/Mail/DMARC/Base.pm
