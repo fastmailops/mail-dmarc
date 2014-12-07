@@ -17,6 +17,7 @@ bin/dmarc_httpd
 bin/dmarc_lookup
 bin/dmarc_receive
 bin/dmarc_send_reports
+bin/dmarc_update_public_suffix_list
 bin/dmarc_view_reports
 bin/install_deps.pl
 dist.ini
@@ -121,6 +122,5 @@ t/25.Report.Receive.t
 t/author-critic.t
 t/mail-dmarc.ini
 t/perlcritic.rc
-t/release-pod-coverage.t
 t/release-pod-syntax.t
 t/whitelist
