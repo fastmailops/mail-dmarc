@@ -1,5 +1,5 @@
 package Mail::DMARC::Base;
-our $VERSION = '1.20141208'; # VERSION
+our $VERSION = '1.20141217'; # VERSION
 use strict;
 use warnings;
 
@@ -106,21 +106,24 @@ sub update_psl_file {
     die "Cannot write to Public Suffix List file $psl_file\n" if ( ! -w $psl_file );
 
     my $url = 'https://publicsuffix.org/list/effective_tld_names.dat';
-    my $response = HTTP::Tiny->new->get( $url );
-    my $content = $response->{'content'};
-    if ( !$response->{'success'} ) {
-        my $status  = $response->{'status'};
-        die "HTTP Request for Public Suffix List file failed with error $status ($content)\n";
+    if ( $dryrun ) {
+        print "Will attempt to update the Public Suffix List file at $psl_file (dryrun mode)\n";
+        return;
     }
 
-    if ( ! $dryrun ) {
-        open my $file, '>', $psl_file || die "Could not write to Public Suffix List file $psl_file\n";
-        print $file $content;
-        close $file;
-        print "Public Suffix List file $psl_file updated\n";
+    my $response = HTTP::Tiny->new->mirror( $url, $psl_file );
+    my $content = $response->{'content'};
+    if ( !$response->{'success'} ) {
+        my $status = $response->{'status'};
+        die "HTTP Request for Public Suffix List file failed with error $status ($content)\n";
     }
     else {
-        print "Public Suffix List file $psl_file not updated (dryrun)\n";
+        if ( $response->{'status'} eq '304' ) {
+            print "Public Suffix List file $psl_file not modified\n";
+        }
+        else {
+            print "Public Suffix List file $psl_file updated\n";
+        }
     }
 }
 
@@ -269,7 +272,7 @@ Mail::DMARC::Base - DMARC utility functions
 
 =head1 VERSION
 
-version 1.20141208
+version 1.20141217
 
 =head1 METHODS
 
@@ -281,7 +284,7 @@ Determination is made by consulting a Public Suffix List. The included PSL is fr
 
 =head2 update_psl_file
 
-Download a new Public Suffix List fine from mozilla and update the installed file with the new copy.
+Download a new Public Suffix List file from mozilla and update the installed file with the new copy.
 
 =head2 has_dns_rr
 
