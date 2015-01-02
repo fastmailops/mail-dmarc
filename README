@@ -2,7 +2,7 @@ NAME
     Mail::DMARC - Perl implementation of DMARC
 
 VERSION
-    version 1.20141217
+    version 1.20150102
 
 SYNOPSIS
     DMARC: Domain-based Message Authentication, Reporting and Conformance
@@ -292,7 +292,7 @@ HISTORY
     The daddy of this perl module was a DMARC module for the qpsmtpd MTA.
 
     Qpsmtpd plugin:
-    https://github.com/qpsmtpd-dev/qpsmtpd-dev/blob/master/plugins/dmarc
+    https://github.com/smtpd/qpsmtpd/blob/master/plugins/dmarc
 
 AUTHORS
     *   Matt Simerson <msimerson@cpan.org>

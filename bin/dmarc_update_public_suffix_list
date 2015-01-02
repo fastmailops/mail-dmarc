@@ -1,5 +1,5 @@
 #!/usr/bin/perl
-our $VERSION = '1.20141217'; # VERSION
+our $VERSION = '1.20150102'; # VERSION
 use strict;
 use warnings;
 
@@ -29,6 +29,8 @@ Mail::DMARC->new()->update_psl_file($dryrun);
 # PODNAME: dmarc_update_public_suffix_list
 # ABSTRACT: command line tool to download updated public suffix list
 
+__END__
+
 =pod
 
 =head1 NAME
@@ -37,7 +39,7 @@ dmarc_update_public_suffix_list - command line tool to download updated public s
 
 =head1 VERSION
 
-version 1.20141217
+version 1.20150102
 
 =head1 SYNOPSIS
 
@@ -56,11 +58,11 @@ version 1.20141217
 
 Downloads a new Public Suffix List to the location specified by /etc/mail-dmarc.ini
 
-This file is maintained by the Mozilla Foundation, it is updated a few times per
+The PSL is maintained by the Mozilla Foundation. It is updated a few times per
 month, you are requested to download no more than once per day.
 
 The URL of the file is https://publicsuffix.org/list/effective_tld_names.dat
-More details can be found on the https://publicsuffix.org/ website.
+More details can be found at https://publicsuffix.org/
 
 =head1 EXAMPLES
 
@@ -94,8 +96,3 @@ This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
 =cut
-
-__END__
-sub {}
-
-

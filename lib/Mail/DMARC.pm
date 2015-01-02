@@ -1,5 +1,5 @@
 package Mail::DMARC;
-our $VERSION = '1.20141217'; # VERSION
+our $VERSION = '1.20150102'; # VERSION
 use strict;
 use warnings;
 
@@ -235,7 +235,7 @@ Mail::DMARC - Perl implementation of DMARC
 
 =head1 VERSION
 
-version 1.20141217
+version 1.20150102
 
 =head1 SYNOPSIS
 
@@ -527,7 +527,7 @@ Best Current Practices: http://tools.ietf.org/html/draft-crocker-dmarc-bcp-03
 
 The daddy of this perl module was a DMARC module for the qpsmtpd MTA.
 
-Qpsmtpd plugin: https://github.com/qpsmtpd-dev/qpsmtpd-dev/blob/master/plugins/dmarc
+Qpsmtpd plugin: https://github.com/smtpd/qpsmtpd/blob/master/plugins/dmarc
 
 =head1 AUTHORS
 
