@@ -44,7 +44,7 @@ my %WriteMakefileArgs = (
     "Carp" => 0,
     "Config::Tiny" => 0,
     "DBD::SQLite" => "1.31",
-    "DBIx::Simple" => 0,
+    "DBIx::Simple" => "1.35",
     "Data::Dumper" => 0,
     "Email::MIME" => 0,
     "Email::Simple" => 0,
@@ -83,7 +83,7 @@ my %WriteMakefileArgs = (
   "TEST_REQUIRES" => {
     "Test::More" => 0
   },
-  "VERSION" => "1.20150106",
+  "VERSION" => "1.20150114",
   "test" => {
     "TESTS" => "t/*.t"
   }
@@ -96,7 +96,7 @@ my %FallbackPrereqs = (
   "Carp" => 0,
   "Config::Tiny" => 0,
   "DBD::SQLite" => "1.31",
-  "DBIx::Simple" => 0,
+  "DBIx::Simple" => "1.35",
   "Data::Dumper" => 0,
   "Email::MIME" => 0,
   "Email::Simple" => 0,

@@ -33,7 +33,7 @@ requires:
   Carp: '0'
   Config::Tiny: '0'
   DBD::SQLite: '1.31'
-  DBIx::Simple: '0'
+  DBIx::Simple: '1.35'
   Data::Dumper: '0'
   Email::MIME: '0'
   Email::Simple: '0'
@@ -73,7 +73,7 @@ resources:
   bugtracker: https://github.com/msimerson/mail-dmarc/issues
   homepage: https://github.com/msimerson/mail-dmarc/wiki
   repository: git://github.com/msimerson/mail-dmarc.git
-version: '1.20150106'
+version: '1.20150114'
 x_contributors:
   - 'Benny Pedersen <me@junc.eu>'
   - 'ColocateUSA.net <company@colocateusa.net>'

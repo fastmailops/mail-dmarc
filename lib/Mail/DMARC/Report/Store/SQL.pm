@@ -1,5 +1,5 @@
 package Mail::DMARC::Report::Store::SQL;
-our $VERSION = '1.20150106'; # VERSION
+our $VERSION = '1.20150114'; # VERSION
 use strict;
 use warnings;
 
@@ -440,7 +440,7 @@ sub row_exists {
     my ($self, $rid, $rec ) = @_;
 
     if ( ! defined $rec->{row}{count} ) {
-        carp "\tnew record";
+        print "new record\n" if $self->verbose;
         return;
     };
 
@@ -724,7 +724,7 @@ Mail::DMARC::Report::Store::SQL - store and retrieve reports from a SQL RDBMS
 
 =head1 VERSION
 
-version 1.20150106
+version 1.20150114
 
 =head1 DESCRIPTION
 

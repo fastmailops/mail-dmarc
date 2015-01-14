@@ -21,7 +21,7 @@ my %module_build_args = (
     "Davide Migliavacca <shari\@cpan.org>"
   ],
   "dist_name" => "Mail-DMARC",
-  "dist_version" => "1.20150106",
+  "dist_version" => "1.20150114",
   "license" => "perl",
   "module_name" => "Mail::DMARC",
   "recommends" => {
@@ -42,7 +42,7 @@ my %module_build_args = (
     "Carp" => 0,
     "Config::Tiny" => 0,
     "DBD::SQLite" => "1.31",
-    "DBIx::Simple" => 0,
+    "DBIx::Simple" => "1.35",
     "Data::Dumper" => 0,
     "Email::MIME" => 0,
     "Email::Simple" => 0,
