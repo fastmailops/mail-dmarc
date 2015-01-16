@@ -1,5 +1,5 @@
 #!/usr/bin/perl
-our $VERSION = '1.20150114'; # VERSION
+our $VERSION = '1.20150116'; # VERSION
 use strict;
 use warnings;
 
@@ -49,6 +49,7 @@ while (defined(my $aggregate = $report->store->retrieve_todo ) ) {
     }
 
     my $sent    = 0;
+    my $cc_sent = 0;
     my @too_big;
     foreach my $u_ref (@$uri_ref) {
         my $method = $u_ref->{uri};
@@ -64,8 +65,9 @@ while (defined(my $aggregate = $report->store->retrieve_todo ) ) {
         if ( 'mailto:' eq substr( $method, 0, 7 ) ) {
             my ($to) = ( split /:/, $method )[-1];
             my $cc = $report->config->{smtp}{cc};
-            if ( $cc && $cc ne 'set.this@for.a.while.example.com' ) {
+            if ( $cc && $cc ne 'set.this@for.a.while.example.com' && ! $cc_sent ) {
                 email( $cc, $shrunk, \$aggregate );
+                $cc_sent = 1;
             };
             email( $to, $shrunk, \$aggregate ) and $sent++;
         }
@@ -216,7 +218,7 @@ dmarc_send_reports - send aggregate reports
 
 =head1 VERSION
 
-version 1.20150114
+version 1.20150116
 
 =head1 AUTHORS
 
