@@ -359,11 +359,17 @@ Populate it.
     $dmarc->envelope_from('sender.example.com');
     $dmarc->header_from('sender.example.com');
     $dmarc->dkim( $dkim_verifier );
-    $dmarc->spf(
-        domain => 'example.com',
-        scope  => 'mfrom',
-        result => 'pass',
-            );
+    $dmarc->spf([
+        {   domain => 'example.com',
+            scope  => 'mfrom',
+            result => 'pass',
+        },
+        {
+            scope  => 'helo',
+            domain => 'mta.example.com',
+            result => 'fail',
+        },
+    ]);
 
 Run the request:
 
@@ -569,7 +575,7 @@ Ricardo Signes <rjbs@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2014 by Matt Simerson.
+This software is copyright (c) 2015 by Matt Simerson.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.

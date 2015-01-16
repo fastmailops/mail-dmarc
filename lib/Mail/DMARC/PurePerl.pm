@@ -36,8 +36,8 @@ sub validate {
     #         specifying that a pass from one authentication test allows one
     #         to skip the other(s). All are required for reporting.
 
-    $self->is_dkim_aligned;   # 11.2.3. DKIM signature verification checks
-    $self->is_spf_aligned;    # 11.2.4. SPF validation checks
+    eval { $self->is_dkim_aligned; };  # 11.2.3. DKIM signature verification checks
+    eval { $self->is_spf_aligned;  };  # 11.2.4. SPF validation checks
     my $aligned = $self->is_aligned(); # 11.2.5. identifier alignment checks
 
     if ($self->config->{report_store}{auto_save}) {
@@ -310,6 +310,11 @@ sub get_dkim_pass_sigs {
     my $self = shift;
 
     my $dkim_sigs = $self->dkim or return ();    # message not signed
+
+    if ( ref $dkim_sigs eq 'Mail::DKIM::Verifier' ) {
+        $dkim_sigs = $self->dkim_from_mail_dkim($dkim_sigs);
+    };
+
     if ( 'ARRAY' ne ref $dkim_sigs ) {
         croak "dkim needs to be an array reference!";
     }
@@ -715,7 +720,7 @@ Davide Migliavacca <shari@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2014 by Matt Simerson.
+This software is copyright (c) 2015 by Matt Simerson.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
