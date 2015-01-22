@@ -1,5 +1,5 @@
 package Mail::DMARC::Report::Store::SQL;
-our $VERSION = '1.20150116'; # VERSION
+our $VERSION = '1.20150122'; # VERSION
 use strict;
 use warnings;
 
@@ -582,7 +582,7 @@ EO_RPP
     return $self->query( $query,
         [ $id, @$pub{ qw/ adkim aspf p sp pct rua /} ]
     )
-    or croak "failed to insert published policy";
+    || croak "failed to insert published policy";
 }
 
 sub db_connect {
@@ -724,7 +724,7 @@ Mail::DMARC::Report::Store::SQL - store and retrieve reports from a SQL RDBMS
 
 =head1 VERSION
 
-version 1.20150116
+version 1.20150122
 
 =head1 DESCRIPTION
 

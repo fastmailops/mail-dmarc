@@ -1,5 +1,5 @@
 package Mail::DMARC::Base;
-our $VERSION = '1.20150116'; # VERSION
+our $VERSION = '1.20150122'; # VERSION
 use strict;
 use warnings;
 
@@ -31,19 +31,35 @@ sub config {
     return $self->{config} = $self->get_config($file);
 }
 
+sub get_prefix {
+    my ($self, $subdir) = @_;
+    return map { $_ . ($subdir ? $subdir : '') } qw[ /usr/local/ /opt/local/ / ./ ];
+}
+
+sub get_sharefile {
+    my ($self, $file) = @_;
+
+    my $match = File::ShareDir::dist_file( 'Mail-DMARC', $file );
+    print "using $match for $file\n" if $self->verbose;
+    return $match;
+}
+
 sub get_config {
     my $self = shift;
     my $file = shift || $self->{config_file} or croak;
     return Config::Tiny->read($file) if -r $file;  # fully qualified
-    my @dirs = qw[ /usr/local/etc /opt/local/etc /etc ./ ];
-    foreach my $d (@dirs) {
+    foreach my $d ($self->get_prefix('etc')) {
         next                              if !-d $d;
         next                              if !-e "$d/$file";
         croak "unreadable file: $d/$file" if !-r "$d/$file";
         my $Config = Config::Tiny->new;
         return Config::Tiny->read("$d/$file");
     }
-    croak "unable to find config file $file\n";
+
+    if ($file ne 'mail-dmarc.ini') {
+        croak "unable to find requested config file $file\n";
+    }
+    return $self->get_sharefile('mail-dmarc.ini');
 }
 
 sub any_inet_ntop {
@@ -63,11 +79,11 @@ sub any_inet_pton {
 
     if ( $ip_txt =~ /:/ ) {
         return Socket6::inet_pton( AF_INET6, $ip_txt )
-            or croak "invalid IPv6: $ip_txt";
+            || croak "invalid IPv6: $ip_txt";
     }
 
     return Socket6::inet_pton( AF_INET, $ip_txt )
-        or croak "invalid IPv4: $ip_txt";
+        || croak "invalid IPv4: $ip_txt";
 }
 
 sub is_public_suffix {
@@ -136,21 +152,17 @@ sub find_psl_file {
         print "using $file for Public Suffix List\n" if $self->verbose;
         return $file;
     }
-    my @dirs = qw[ ./ /usr/local/ /opt/local /usr/ ];
-    my $match;
-    foreach my $dir (@dirs) {
-        $match = $dir . $file;
-        last if ( -f $match && -r $match );
+    my $path;
+    foreach $path ($self->get_prefix('share/' . $file)) {
+        last if ( -f $path && -r $path );
     }
-    if (-r $match) {
-        print "using $match for Public Suffix List\n" if $self->verbose;
-        return $match;
+    if ($path && -r $path) {
+        print "using $path for Public Suffix List\n" if $self->verbose;
+        return $path;
     };
 
-    # Fallback to included suffic list, dies if not found/readable
-    $match = File::ShareDir::dist_file( 'Mail-DMARC', 'public_suffix_list' );
-    print "using $match for Public Suffix List\n" if $self->verbose;
-    return $match;
+    # Fallback to included suffic list
+    return $self->get_sharefile('public_suffix_list');
 };
 
 sub has_dns_rr {
@@ -272,7 +284,7 @@ Mail::DMARC::Base - DMARC utility functions
 
 =head1 VERSION
 
-version 1.20150116
+version 1.20150122
 
 =head1 METHODS
 

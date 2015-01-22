@@ -5,6 +5,7 @@ author:
   - 'Davide Migliavacca <shari@cpan.org>'
 build_requires:
   Module::Build: '0.3601'
+  Test::File::ShareDir: '0'
   Test::More: '0'
 configure_requires:
   ExtUtils::MakeMaker: '0'
@@ -62,6 +63,7 @@ requires:
   Socket: '0'
   Socket6: '0.23'
   Sys::Hostname: '0'
+  Test::File::ShareDir: '0'
   URI: '0'
   XML::LibXML: '0'
   lib: '0'
@@ -73,9 +75,10 @@ resources:
   bugtracker: https://github.com/msimerson/mail-dmarc/issues
   homepage: https://github.com/msimerson/mail-dmarc/wiki
   repository: git://github.com/msimerson/mail-dmarc.git
-version: '1.20150116'
+version: '1.20150122'
 x_contributors:
   - 'Benny Pedersen <me@junc.eu>'
   - 'ColocateUSA.net <company@colocateusa.net>'
   - 'Marc Bradshaw <marc@marcbradshaw.net>'
   - 'Ricardo Signes <rjbs@cpan.org>'
+  - 'Ricardo Signes <rjbs@users.noreply.github.com>'

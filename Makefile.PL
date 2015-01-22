@@ -73,6 +73,7 @@ my %WriteMakefileArgs = (
     "Socket" => 0,
     "Socket6" => "0.23",
     "Sys::Hostname" => 0,
+    "Test::File::ShareDir" => 0,
     "URI" => 0,
     "XML::LibXML" => 0,
     "lib" => 0,
@@ -81,9 +82,10 @@ my %WriteMakefileArgs = (
     "warnings" => 0
   },
   "TEST_REQUIRES" => {
+    "Test::File::ShareDir" => 0,
     "Test::More" => 0
   },
-  "VERSION" => "1.20150116",
+  "VERSION" => "1.20150122",
   "test" => {
     "TESTS" => "t/*.t"
   }
@@ -128,6 +130,7 @@ my %FallbackPrereqs = (
   "Socket" => 0,
   "Socket6" => "0.23",
   "Sys::Hostname" => 0,
+  "Test::File::ShareDir" => 0,
   "Test::More" => 0,
   "URI" => 0,
   "XML::LibXML" => 0,

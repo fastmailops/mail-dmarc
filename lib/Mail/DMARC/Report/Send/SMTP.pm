@@ -1,5 +1,5 @@
 package Mail::DMARC::Report::Send::SMTP;
-our $VERSION = '1.20150116'; # VERSION
+our $VERSION = '1.20150122'; # VERSION
 use strict;
 use warnings;
 
@@ -108,6 +108,9 @@ sub get_subject {
     my $rid = $$agg_ref->metadata->report_id || time;
     my $id = POSIX::strftime( "%Y.%m.%d.", localtime ) . $rid;
     my $us = $self->config->{organization}{domain};
+    if ($us eq 'example.com') {
+        die "Please update mail-dmarc.ini";
+    }
     my $pol_dom = $$agg_ref->policy_published->domain;
     return "Report Domain: $pol_dom Submitter: $us Report-ID:$id";
 }
@@ -225,7 +228,7 @@ Mail::DMARC::Report::Send::SMTP - utility methods for sending reports via SMTP
 
 =head1 VERSION
 
-version 1.20150116
+version 1.20150122
 
 =head2 SUBJECT FIELD
 

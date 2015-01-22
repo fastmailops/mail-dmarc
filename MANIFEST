@@ -100,6 +100,7 @@ share/html/plugins/searchFilter.css
 share/html/plugins/ui.multiselect.css
 share/html/plugins/ui.multiselect.js.gz
 share/mail-dmarc.cron
+share/mail-dmarc.ini
 share/mail_dmarc_schema.mysql
 share/mail_dmarc_schema.sqlite
 share/public_suffix_list
