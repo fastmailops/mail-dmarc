@@ -1,5 +1,5 @@
 package Mail::DMARC;
-our $VERSION = '1.20150122'; # VERSION
+our $VERSION = '1.20150125'; # VERSION
 use strict;
 use warnings;
 
@@ -88,15 +88,17 @@ sub dkim_from_mail_dkim {
     foreach my $s ( $dkim->signatures ) {
         next if ref $s eq 'Mail::DKIM::DkSignature';
 
-        if ($s->{result} eq 'invalid') {  # See GH Issue #21
-            $s->{result} = 'temperror';
+        my $result = $s->result;
+
+        if ($result eq 'invalid') {  # See GH Issue #21
+            $result = 'temperror';
         }
 
         push @{ $self->{dkim} },
             {
             domain       => $s->domain,
             selector     => $s->selector,
-            result       => $s->result,
+            result       => $result,
             human_result => $s->result_detail,
             };
     }
@@ -240,7 +242,7 @@ Mail::DMARC - Perl implementation of DMARC
 
 =head1 VERSION
 
-version 1.20150122
+version 1.20150125
 
 =head1 SYNOPSIS
 

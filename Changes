@@ -1,5 +1,5 @@
 
-1.20150122 2015-01-23 Australia/Melbourne
+1.20150125 2015-01-25 Australia/Melbourne
 
  - DMARC: update docs to show SPF one-shot syntax
  - PurePerl: one shot accepts a Mail::DKIM::Verifier
