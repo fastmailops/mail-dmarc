@@ -1,5 +1,5 @@
 package Mail::DMARC;
-our $VERSION = '1.20150125'; # VERSION
+our $VERSION = '1.20150130'; # VERSION
 use strict;
 use warnings;
 
@@ -47,9 +47,24 @@ sub local_policy {
     return $_[0]->{local_policy} = $_[1];
 }
 
+sub _unwrap {
+    my ( $self, $ref ) = @_;
+    if (ref $$ref and ref $$ref eq 'CODE') {
+        $$ref = $$ref->();
+        return 1;
+    }
+    return;
+}
+
 sub dkim {
     my ( $self, @args ) = @_;
-    return $self->{dkim} if 0 == scalar @args;
+
+    if (0 == scalar @args) {
+      $self->is_valid_dkim if $self->_unwrap( \$self->{dkim} );
+      return $self->{dkim};
+    }
+
+    $self->{dkim} ||= [];
 
     if ( scalar @args > 1 ) {
         croak "invalid arguments to dkim" if @args % 2;
@@ -76,6 +91,11 @@ sub dkim {
         push @{ $self->{dkim} }, $dkim;
         $self->is_valid_dkim;
         return $self->{dkim};
+    };
+
+    if ( 'CODE' eq ref $dkim ) {
+        $self->{dkim} = $dkim;
+        return $self->{dkim}; # <-- may confuse people not thinking straight
     };
 
     croak "invalid dkim argument";
@@ -107,7 +127,13 @@ sub dkim_from_mail_dkim {
 
 sub spf {
     my ( $self, @args ) = @_;
-    return $self->{spf} if 0 == scalar @args;
+
+    if (0 == scalar @args) {
+      $self->is_valid_spf if $self->_unwrap( \$self->{spf} );
+      return $self->{spf}
+    }
+
+    $self->{spf} ||= [];
 
     if ( scalar @args == 1 && ref $args[0] ) {
         if ( ref $args[0] eq 'HASH' ) {
@@ -115,6 +141,10 @@ sub spf {
             return $self->{spf};
         };
         if ( ref $args[0] eq 'ARRAY' ) {
+            $self->{spf} = $args[0];
+            return $self->{spf};
+        }
+        if ( ref $args[0] eq 'CODE' ) {
             $self->{spf} = $args[0];
             return $self->{spf};
         }
@@ -242,7 +272,7 @@ Mail::DMARC - Perl implementation of DMARC
 
 =head1 VERSION
 
-version 1.20150125
+version 1.20150130
 
 =head1 SYNOPSIS
 
