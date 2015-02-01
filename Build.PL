@@ -21,7 +21,7 @@ my %module_build_args = (
     "Davide Migliavacca <shari\@cpan.org>"
   ],
   "dist_name" => "Mail-DMARC",
-  "dist_version" => "1.20150131",
+  "dist_version" => "1.20150201",
   "license" => "perl",
   "module_name" => "Mail::DMARC",
   "recommends" => {
@@ -60,6 +60,10 @@ my %module_build_args = (
     "IO::Uncompress::Unzip" => 0,
     "JSON" => 0,
     "LWP::UserAgent" => 0,
+    "Mail::DKIM" => 0,
+    "Mail::DKIM::PrivateKey" => 0,
+    "Mail::DKIM::Signer" => 0,
+    "Mail::DKIM::TextWrap" => 0,
     "Net::DNS::Resolver" => 0,
     "Net::HTTP" => 0,
     "Net::IP" => 0,

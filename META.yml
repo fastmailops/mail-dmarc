@@ -52,6 +52,10 @@ requires:
   IO::Uncompress::Unzip: '0'
   JSON: '0'
   LWP::UserAgent: '0'
+  Mail::DKIM: '0'
+  Mail::DKIM::PrivateKey: '0'
+  Mail::DKIM::Signer: '0'
+  Mail::DKIM::TextWrap: '0'
   Net::DNS::Resolver: '0'
   Net::HTTP: '0'
   Net::IP: '0'
@@ -75,7 +79,7 @@ resources:
   bugtracker: https://github.com/msimerson/mail-dmarc/issues
   homepage: https://github.com/msimerson/mail-dmarc/wiki
   repository: git://github.com/msimerson/mail-dmarc.git
-version: '1.20150131'
+version: '1.20150201'
 x_contributors:
   - 'Benny Pedersen <me@junc.eu>'
   - 'ColocateUSA.net <company@colocateusa.net>'

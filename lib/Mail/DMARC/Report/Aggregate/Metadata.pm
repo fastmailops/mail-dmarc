@@ -1,5 +1,5 @@
 package Mail::DMARC::Report::Aggregate::Metadata;
-our $VERSION = '1.20150131'; # VERSION
+our $VERSION = '1.20150201'; # VERSION
 use strict;
 use warnings;
 
@@ -85,7 +85,7 @@ Mail::DMARC::Report::Aggregate::Metadata - metadata section of aggregate report
 
 =head1 VERSION
 
-version 1.20150131
+version 1.20150201
 
 =head1 AUTHORS
 
