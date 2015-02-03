@@ -1,5 +1,5 @@
 package Mail::DMARC::Result;
-our $VERSION = '1.20150201'; # VERSION
+our $VERSION = '1.20150203'; # VERSION
 use strict;
 use warnings;
 
@@ -130,7 +130,7 @@ Mail::DMARC::Result - processing result object
 
 =head1 VERSION
 
-version 1.20150201
+version 1.20150203
 
 =head1 OVERVIEW
 
