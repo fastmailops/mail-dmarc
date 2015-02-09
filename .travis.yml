@@ -15,6 +15,7 @@ perl:
 before_install:
    # Prevent "Please tell me who you are" errors for certain DZIL configs
    - git config --global user.name "TravisCI"
+   - cpanm -n Devel::Cover::Report::Coveralls
 
 install:
    - cpanm --quiet --notest Regexp::Common Config::Tiny File::ShareDir Net::DNS::Resolver
@@ -39,3 +40,5 @@ install:
 script: HARNESS_IS_VERBOSE=1 prove -v -Ilib t
 #
 #   - dzil smoke --release --author
+after_script:
+  - cover -test -make 'prove -Ilib t' -report coveralls
