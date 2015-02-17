@@ -7,6 +7,7 @@ build_requires:
   Module::Build: '0.3601'
   Test::File::ShareDir: '0'
   Test::More: '0'
+  Test::Output: '0'
 configure_requires:
   ExtUtils::MakeMaker: '0'
   File::ShareDir::Install: '0.06'
@@ -25,6 +26,7 @@ recommends:
   IO::Compress::Zip: '0'
   IO::Uncompress::Gunzip: '0'
   IO::Uncompress::Unzip: '0'
+  Mail::DKIM: '0'
   Net::HTTP: '0'
   Net::IMAP::Simple: '0'
   Net::Server: '2'
@@ -52,7 +54,6 @@ requires:
   IO::Uncompress::Unzip: '0'
   JSON: '0'
   LWP::UserAgent: '0'
-  Mail::DKIM: '0'
   Mail::DKIM::PrivateKey: '0'
   Mail::DKIM::Signer: '0'
   Mail::DKIM::TextWrap: '0'
@@ -61,6 +62,7 @@ requires:
   Net::IP: '0'
   Net::SMTPS: '0'
   Net::SSLeay: '0'
+  Net::Server::HTTP: '0'
   POSIX: '0'
   Pod::Usage: '0'
   Regexp::Common: '2013031301'
@@ -79,7 +81,7 @@ resources:
   bugtracker: https://github.com/msimerson/mail-dmarc/issues
   homepage: https://github.com/msimerson/mail-dmarc/wiki
   repository: git://github.com/msimerson/mail-dmarc.git
-version: '1.20150203'
+version: '1.20150217'
 x_contributors:
   - 'Benny Pedersen <me@junc.eu>'
   - 'ColocateUSA.net <company@colocateusa.net>'

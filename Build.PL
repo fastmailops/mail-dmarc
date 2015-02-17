@@ -21,7 +21,7 @@ my %module_build_args = (
     "Davide Migliavacca <shari\@cpan.org>"
   ],
   "dist_name" => "Mail-DMARC",
-  "dist_version" => "1.20150203",
+  "dist_version" => "1.20150217",
   "license" => "perl",
   "module_name" => "Mail::DMARC",
   "recommends" => {
@@ -31,6 +31,7 @@ my %module_build_args = (
     "IO::Compress::Zip" => 0,
     "IO::Uncompress::Gunzip" => 0,
     "IO::Uncompress::Unzip" => 0,
+    "Mail::DKIM" => 0,
     "Net::HTTP" => 0,
     "Net::IMAP::Simple" => 0,
     "Net::Server" => 2
@@ -60,7 +61,6 @@ my %module_build_args = (
     "IO::Uncompress::Unzip" => 0,
     "JSON" => 0,
     "LWP::UserAgent" => 0,
-    "Mail::DKIM" => 0,
     "Mail::DKIM::PrivateKey" => 0,
     "Mail::DKIM::Signer" => 0,
     "Mail::DKIM::TextWrap" => 0,
@@ -69,6 +69,7 @@ my %module_build_args = (
     "Net::IP" => 0,
     "Net::SMTPS" => 0,
     "Net::SSLeay" => 0,
+    "Net::Server::HTTP" => 0,
     "POSIX" => 0,
     "Pod::Usage" => 0,
     "Regexp::Common" => "2013031301",
@@ -99,7 +100,8 @@ my %module_build_args = (
   },
   "test_requires" => {
     "Test::File::ShareDir" => 0,
-    "Test::More" => 0
+    "Test::More" => 0,
+    "Test::Output" => 0
   }
 );
 
@@ -107,7 +109,8 @@ my %module_build_args = (
 my %fallback_build_requires = (
   "Module::Build" => "0.3601",
   "Test::File::ShareDir" => 0,
-  "Test::More" => 0
+  "Test::More" => 0,
+  "Test::Output" => 0
 );
 
 

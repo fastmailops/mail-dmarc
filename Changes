@@ -1,5 +1,14 @@
 
-1.20150203 2015-02-03 Australia/Melbourne
+1.20150217 2015-02-18 Australia/Melbourne
+
+1.20150211 2015-02-10 America/Los_Angeles
+
+ - optionally DKIM sign sent reports
+ - warn when DMARC record format is invalid
+ - accept callbacks (lazy eval) for SPF & DKIM results
+ - make the report record building consistent for eval and reporting
+ - rewrite DKIM result invalid -> temperror
+ - capture test warnings, so 'make test' is prettier
 
 1.20150123 2015-01-22 America/Los_Angeles
 

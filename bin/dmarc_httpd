@@ -1,12 +1,17 @@
 #!/usr/bin/perl
-our $VERSION = '1.20150203'; # VERSION
+our $VERSION = '1.20150217'; # VERSION
 use strict;
 use warnings;
 
 use lib 'lib';
+use Mail::DMARC;
 use Mail::DMARC::HTTP;
+
+my $dmarc = Mail::DMARC->new();
+$dmarc->is_public_suffix('tnpi.net');
+my $report = $dmarc->report;
 my $http = Mail::DMARC::HTTP->new;
-$http->dmarc_httpd;
+$http->dmarc_httpd($report);
 exit;
 
 # ABSTRACT: a web server for DMARC validation and report viewing
@@ -22,7 +27,7 @@ dmarc_httpd - a web server for DMARC validation and report viewing
 
 =head1 VERSION
 
-version 1.20150203
+version 1.20150217
 
 =head1 SYNOPSIS
 

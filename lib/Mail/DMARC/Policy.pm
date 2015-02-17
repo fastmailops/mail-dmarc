@@ -1,5 +1,5 @@
 package Mail::DMARC::Policy;
-our $VERSION = '1.20150203'; # VERSION
+our $VERSION = '1.20150217'; # VERSION
 use strict;
 use warnings;
 
@@ -12,8 +12,8 @@ sub new {
     my $package = ref $class ? ref $class : $class;
     my $self = bless {}, $package;
 
-    return $self if 0 == @args;                       # no args, empty pol
-    return $self->parse( $args[0] ) if 1 == @args;    # a string to parse
+    return $self if 0 == scalar @args;                # no args, empty pol
+    return $self->parse( $args[0] ) if 1 == @args;    # a string
 
     croak "invalid arguments" if @args % 2 != 0;
     my $policy = {@args};
@@ -28,9 +28,20 @@ sub parse {
     $str =~ s/\s//g;                                  # remove all whitespace
     $str =~ s/\\;/;/;                                 # replace \; with ;
     chop $str if ';' eq substr $str, -1, 1;           # remove a trailing ;
-    my $policy = { map { split /=/, $_ } split /;/, $str };
-    croak "invalid policy" if !$self->is_valid($policy);
-    return bless $policy, ref $self;    # inherited defaults + overrides
+    my @tag_vals = split /;/, $str;
+    my %policy;
+    foreach my $tv (@tag_vals) {
+        my ($tag, $value) = split /=/, $tv, 2;
+        if ( !defined $tag || !defined $value || $value eq '') {
+            warn "invalid DMARC record, please post this message to\n" .
+                 "\thttps://github.com/msimerson/mail-dmarc/issues/39\n" .
+                 "\t$str\n";
+            next;
+        }
+        $policy{$tag} = $value;
+    }
+    croak "invalid policy" if !$self->is_valid(\%policy);
+    return bless \%policy, ref $self;    # inherited defaults + overrides
 }
 
 sub apply_defaults {
@@ -172,7 +183,7 @@ Mail::DMARC::Policy - a DMARC policy in object format
 
 =head1 VERSION
 
-version 1.20150203
+version 1.20150217
 
 =head1 SYNOPSIS
 

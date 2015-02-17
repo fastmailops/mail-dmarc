@@ -3,6 +3,7 @@ use warnings;
 
 use Data::Dumper;
 use Test::More;
+use Test::Output;
 
 use lib 'lib';
 
@@ -16,16 +17,29 @@ ok( !$pol->v, "policy, version, neg" );
 ok( $pol->v('DMARC1'), "policy, set" );
 cmp_ok( $pol->v, 'eq', 'DMARC1', "policy, version, pos" );
 
+my $expected_parse_warning = __expected_parse_warning();
 test_new();
 test_is_valid_p();
 test_is_valid_rf();
-test_parse();
+stderr_is { test_parse() } $expected_parse_warning, 'STDERR yields parse warnings';
 test_setter_values();
 test_apply_defaults();
 test_is_valid();
 
 done_testing();
 exit;
+
+sub __expected_parse_warning {
+    return <<'EO_PARSE_WARN'
+invalid DMARC record, please post this message to
+	https://github.com/msimerson/mail-dmarc/issues/39
+	v=DMARC1;p=reject;rua=mailto:dmarc-feedback@theartfarm.com;pct=;ruf=mailto:dmarc-feedback@theartfarm.com
+invalid DMARC record, please post this message to
+	https://github.com/msimerson/mail-dmarc/issues/39
+	domain=tnpi.net;v=DMARC1;p=reject;rua=mailto:dmarc-feedback@theartfarm.com;pct=;ruf=mailto:dmarc-feedback@theartfarm.com
+EO_PARSE_WARN
+;
+}
 
 sub test_apply_defaults {
 
@@ -37,18 +51,16 @@ sub test_apply_defaults {
     # default policy
     $pol = Mail::DMARC::Policy->new( v => 'DMARC1', p => 'reject' );
     ok( $pol->apply_defaults(), "apply_defaults" );
-    is_deeply(
-        $pol,
-        {   v     => 'DMARC1',
-            p     => 'reject',
-            rf    => 'afrf',
-            fo    => 0,
-            adkim => 'r',
-            aspf  => 'r',
-            ri    => 86400
-        },
-        "new, with defaults"
-    );
+    my $expected = {
+        v     => 'DMARC1',
+        p     => 'reject',
+        rf    => 'afrf',
+        fo    => 0,
+        adkim => 'r',
+        aspf  => 'r',
+        ri    => 86400
+    };
+    is_deeply( $pol, $expected, "new, with defaults" );
 }
 
 sub test_setter_values {
@@ -133,16 +145,37 @@ sub test_parse {
     $pol = $pol->parse(
         'v=DMARC1; p=reject; rua=mailto:dmarc@example.co; pct=90');
     isa_ok( $pol, 'Mail::DMARC::Policy' );
+    my $expected = {
+        v   => 'DMARC1',
+        p   => 'reject',
+        pct => 90,
+        rua => 'mailto:dmarc@example.co',
+    };
+    is_deeply( $pol, $expected, 'parse');
+
     is_deeply(
-        $pol,
-        {   v   => 'DMARC1',
-            p   => 'reject',
-            pct => 90,
-            rua => 'mailto:dmarc@example.co',
+        $pol->parse(
+            'v=DMARC1;p=reject;rua=mailto:dmarc-feedback@theartfarm.com;pct=;ruf=mailto:dmarc-feedback@theartfarm.com'
+        ),
+        {
+            v   => 'DMARC1',   p => 'reject',
+            rua => 'mailto:dmarc-feedback@theartfarm.com',
+            ruf => 'mailto:dmarc-feedback@theartfarm.com',
         },
-        'parse'
+        "parse, warns of invalid DMARC record format"
     );
 
+     is_deeply(
+        $pol->parse(
+            'domain=tnpi.net;v=DMARC1;p=reject;rua=mailto:dmarc-feedback@theartfarm.com;pct=;ruf=mailto:dmarc-feedback@theartfarm.com'
+        ),
+        {
+            v   => 'DMARC1',   p => 'reject', domain => 'tnpi.net',
+            rua => 'mailto:dmarc-feedback@theartfarm.com',
+            ruf => 'mailto:dmarc-feedback@theartfarm.com',
+        },
+        "parse, warns of invalid DMARC record format, with location"
+    );
 }
 
 sub test_is_valid_p {

@@ -1,5 +1,5 @@
 package Mail::DMARC::PurePerl;
-our $VERSION = '1.20150203'; # VERSION
+our $VERSION = '1.20150217'; # VERSION
 use strict;
 use warnings;
 
@@ -25,9 +25,9 @@ sub validate {
     $self->result->result('fail');        # set a couple
     $self->result->disposition('none');   # defaults
 
-# 11.2.1 Extract RFC5322.From domain
+    # 11.2.1 Extract RFC5322.From domain
     my $from_dom = $self->get_from_dom() or return $self->result;
-# 9.6. reject email if the domain appears to not exist
+    # 9.6. reject email if the domain appears to not exist
     $self->exists_in_dns() or return $self->result;
     $policy ||= $self->discover_policy();  # 11.2.2 Query DNS for DMARC policy
     $policy or return $self->result;
@@ -111,12 +111,12 @@ sub discover_policy {
     }
 
     my $policy;
-    eval { $policy = $self->policy( $matches->[0] ) } or return;
+    my $policy_str = "domain=$from_dom;" . $matches->[0];  # prefix with domain
+    eval { $policy = $self->policy( $policy_str ) } or return;
     if ($@) {
         $self->result->reason( type => 'other', comment => "policy parse error: $@" );
         return;
     };
-    $policy->domain($from_dom);
     $self->result->published($policy);
 
     # 9.6 If a retrieved policy record does not contain a valid "p" tag, or
@@ -224,7 +224,7 @@ sub is_spf_aligned {
 
     if ( !$spf_dom && !$self->spf ) { croak "missing SPF!"; }
     if ( !$spf_dom ) {
-        my @passes = grep { $_->{result} =~ /pass/i } @{ $self->spf };
+        my @passes = grep { $_->{result} && $_->{result} =~ /pass/i } @{ $self->spf };
         if (scalar @passes == 0) {
             $self->result->spf('fail');
             return 0;
@@ -437,9 +437,9 @@ sub get_from_dom {
         return;
     };
 
-# TODO: the From header can contain multiple addresses and should be
-# parsed as described in RFC 2822. If From has multiple-addresses,
-# then parse and use the domain in the Sender header.
+    # TODO: the From header can contain multiple addresses and should be
+    # parsed as described in RFC 2822. If From has multiple-addresses,
+    # then parse and use the domain in the Sender header.
 
     # This returns only the domain in the last email address.
     # Caller can pass in pre-parsed from_dom if this doesn't suit them.
@@ -559,7 +559,7 @@ Mail::DMARC::PurePerl - Pure Perl implementation of DMARC
 
 =head1 VERSION
 
-version 1.20150203
+version 1.20150217
 
 =head1 METHODS
 

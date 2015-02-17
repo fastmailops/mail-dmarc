@@ -1,14 +1,36 @@
 package Mail::DMARC;
-our $VERSION = '1.20150203'; # VERSION
+our $VERSION = '1.20150217'; # VERSION
 use strict;
 use warnings;
 
 use Carp;
+our $psl_loads = 0;
 
 use parent 'Mail::DMARC::Base';
 require Mail::DMARC::Policy;
 require Mail::DMARC::Report;
 require Mail::DMARC::Result;
+require Mail::DMARC::Report::Aggregate::Record::Auth_Results::SPF;
+require Mail::DMARC::Report::Aggregate::Record::Auth_Results::DKIM;
+
+sub new {
+    my ( $class, @args ) = @_;
+    croak "invalid args" if scalar @args % 2;
+    my %args = @args;
+    my $self = bless {
+        config_file => 'mail-dmarc.ini',
+        }, $class;
+
+    foreach my $key ( keys %args ) {
+        if ($self->can($key)) {
+            $self->$key( $args{$key} );
+        }
+        else {
+            $self->{$key} = $args{$key};
+        }
+    }
+    return $self;
+}
 
 sub source_ip {
     return $_[0]->{source_ip} if 1 == scalar @_;
@@ -47,61 +69,43 @@ sub local_policy {
     return $_[0]->{local_policy} = $_[1];
 }
 
-sub _unwrap {
-    my ( $self, $ref ) = @_;
-    if (ref $$ref and ref $$ref eq 'CODE') {
-        $$ref = $$ref->();
-        return 1;
-    }
-    return;
-}
-
 sub dkim {
-    my ( $self, @args ) = @_;
+    my ($self, @args) = @_;
 
     if (0 == scalar @args) {
-      $self->is_valid_dkim if $self->_unwrap( \$self->{dkim} );
-      return $self->{dkim};
-    }
-
-    $self->{dkim} ||= [];
-
-    if ( scalar @args > 1 ) {
-        croak "invalid arguments to dkim" if @args % 2;
-        push @{ $self->{dkim} }, { @args };
-        $self->is_valid_dkim;
-        return $self->{dkim};
-    };
-
-    my $dkim = shift @args;
-
-    croak "invalid dkim argument" if ! ref $dkim;
-
-    if ( ref $dkim eq 'Mail::DKIM::Verifier' ) {
-        return $self->dkim_from_mail_dkim($dkim);
-    };
-
-    if ( 'ARRAY' eq ref $dkim ) {
-        $self->{dkim} = $dkim;
-        $self->is_valid_dkim;
+        $self->_unwrap('dkim');
         return $self->{dkim};
     }
 
-    if ( 'HASH' eq ref $dkim ) {
-        push @{ $self->{dkim} }, $dkim;
-        $self->is_valid_dkim;
-        return $self->{dkim};
+    # one shot
+    if (1 == scalar @args) {
+        # warn "one argument\n";
+        if (ref $args[0] eq 'CODE') {
+            return $self->{dkim} = $args[0];
+        }
+
+        if ( ref $args[0] eq 'ARRAY') {
+            foreach my $d ( @{ $args[0] }) {
+                push @{ $self->{dkim}},
+                    Mail::DMARC::Report::Aggregate::Record::Auth_Results::DKIM->new($d);
+            }
+            return $self->{dkim};
+        }
+
+        if ( ref $args[0] eq 'Mail::DKIM::Verifier' ) {
+            $self->_from_mail_dkim($args[0]);
+            return $self->{dkim};
+        }
     };
 
-    if ( 'CODE' eq ref $dkim ) {
-        $self->{dkim} = $dkim;
-        return $self->{dkim}; # <-- may confuse people not thinking straight
-    };
+    #warn "iterative\n";
+    push @{ $self->{dkim}},
+        Mail::DMARC::Report::Aggregate::Record::Auth_Results::DKIM->new(@args);
 
-    croak "invalid dkim argument";
+    return $self->{dkim};
 }
 
-sub dkim_from_mail_dkim {
+sub _from_mail_dkim {
     my ( $self, $dkim ) = @_;
 
     # A DKIM verifier will have result and signature methods.
@@ -114,45 +118,49 @@ sub dkim_from_mail_dkim {
             $result = 'temperror';
         }
 
-        push @{ $self->{dkim} },
-            {
-            domain       => $s->domain,
-            selector     => $s->selector,
-            result       => $result,
-            human_result => $s->result_detail,
-            };
+        push @{ $self->{dkim}},
+            Mail::DMARC::Report::Aggregate::Record::Auth_Results::DKIM->new(
+                domain       => $s->domain,
+                selector     => $s->selector,
+                result       => $result,
+                human_result => $s->result_detail,
+            );
     }
-    return $self->{dkim};
+}
+
+sub _unwrap {
+    my ( $self, $key ) = @_;
+    if ($self->{$key} and ref $self->{$key} eq 'CODE') {
+        my $code = delete $self->{$key};
+        $self->$key( $self->$code );
+    }
+    return;
 }
 
 sub spf {
-    my ( $self, @args ) = @_;
-
+   my ($self, @args) = @_;
     if (0 == scalar @args) {
-      $self->is_valid_spf if $self->_unwrap( \$self->{spf} );
-      return $self->{spf}
+      $self->_unwrap('spf');
+      return $self->{spf};
     }
 
-    $self->{spf} ||= [];
-
-    if ( scalar @args == 1 && ref $args[0] ) {
-        if ( ref $args[0] eq 'HASH' ) {
-            push @{ $self->{spf} }, $args[0];
-            return $self->{spf};
-        };
-        if ( ref $args[0] eq 'ARRAY' ) {
-            $self->{spf} = $args[0];
-            return $self->{spf};
-        }
-        if ( ref $args[0] eq 'CODE' ) {
-            $self->{spf} = $args[0];
-            return $self->{spf};
-        }
+    if (1 == scalar @args && ref $args[0] eq 'CODE') {
+      return $self->{spf} = $args[0];
     }
 
-    croak "invalid arguments" if @args % 2;
-    push @{ $self->{spf} }, {@args};
-    $self->is_valid_spf();
+    if (1 == scalar @args && ref $args[0] eq 'ARRAY') {
+        # warn "SPF one shot";
+        foreach my $d ( @{ $args[0] }) {
+            push @{ $self->{spf} },
+                Mail::DMARC::Report::Aggregate::Record::Auth_Results::SPF->new($d);
+        }
+        return $self->{spf};
+    }
+
+    #warn "SPF iterative";
+    push @{ $self->{spf} },
+        Mail::DMARC::Report::Aggregate::Record::Auth_Results::SPF->new(@args);
+
     return $self->{spf};
 }
 
@@ -180,47 +188,6 @@ sub is_subdomain {
     return $_[0]->{is_subdomain} = $_[1];
 }
 
-sub is_valid_dkim {
-    my $self = shift;
-
-    foreach my $dkim ( @{ $self->{dkim} } ) {
-        foreach my $f (qw/ domain result /) {
-            if ( !$dkim->{$f} ) {
-                croak "DKIM value $f is required!";
-            }
-        }
-
-        my @dkim_r = qw/ pass fail neutral none permerror policy temperror /;
-        if ( !grep { $_ eq lc $dkim->{result} } @dkim_r ) {
-            croak "invalid DKIM result!";
-        }
-    };
-    return 1;
-};
-
-sub is_valid_spf {
-    my $self = shift;
-
-    foreach my $spf ( @{ $self->{spf} } ) {
-        foreach my $f (qw/ domain result scope /) {
-            if ( !$spf->{$f} ) {
-                croak "SPF $f is required!";
-            }
-        }
-
-        croak if $spf->{result} &&
-            ! $self->is_valid_spf_result( $spf->{result} );
-
-        croak if $spf->{scope} &&
-            ! $self->is_valid_spf_scope( $spf->{scope} );
-
-        if ( $spf->{result} =~ /^pass$/i && !$spf->{domain} ) {
-            croak "SPF pass MUST include the RFC5321.MailFrom domain!";
-        }
-    };
-    return 1;
-}
-
 sub save_aggregate {
     my ($self) = @_;
 
@@ -234,35 +201,41 @@ sub save_aggregate {
     $agg->metadata->end( time + ($self->result->published->ri || 86400 ));
 
     $agg->policy_published( $self->result->published );
-# could pass in $self as the identifier, and $self->result as the
-# policy_evaluated. This documents what's being passed.
-    $agg->record({
-                row => {
-                    source_ip         => $self->source_ip,
-                    policy_evaluated  => {
-                        disposition   => $self->result->disposition,
-                        dkim          => $self->result->dkim,
-                        spf           => $self->result->spf,
-                        reason        => $self->result->reason,
-                    },
-                },
-                identifiers => {
-                    envelope_to   => $self->envelope_to,
-                    envelope_from => $self->envelope_from,
-                    header_from   => $self->header_from,
-                    },
-                auth_results => {
-                    dkim          => $self->dkim,
-                    spf           => $self->spf,
-                    },
-            });
 
+    my $rec = Mail::DMARC::Report::Aggregate::Record->new();
+    $rec->row->source_ip( $self->source_ip );
+
+    $rec->identifiers(
+            envelope_to   => $self->envelope_to,
+            envelope_from => $self->envelope_from,
+            header_from   => $self->header_from,
+        );
+
+    $rec->auth_results->dkim($self->dkim);
+    $rec->auth_results->spf($self->spf);
+
+    $rec->row->policy_evaluated(
+        disposition   => $self->result->disposition,
+        dkim          => $self->result->dkim,
+        spf           => $self->result->spf,
+        reason        => $self->result->reason,
+    );
+
+    $agg->record($rec);
     return $self->report->save_aggregate;
 };
+
+sub init {
+    # used for testing
+    my $self = shift;
+    map { delete $self->{$_} } qw/ spf spf_ar dkim dkim_ar /;
+}
 
 1;
 
 # ABSTRACT: Perl implementation of DMARC
+
+__END__
 
 =pod
 
@@ -272,7 +245,7 @@ Mail::DMARC - Perl implementation of DMARC
 
 =head1 VERSION
 
-version 1.20150203
+version 1.20150217
 
 =head1 SYNOPSIS
 
@@ -354,6 +327,12 @@ received reports will have a null value for report_policy_published.rua
 outgoing reports will have null values for report.uuid and report_record.count
 
 =back
+
+=head1 Code Climate
+
+=for markdown [![Build Status](https://travis-ci.org/msimerson/mail-dmarc.svg?branch=master)](https://travis-ci.org/msimerson/mail-dmarc)
+
+=for markdown [![Coverage Status](https://coveralls.io/repos/msimerson/mail-dmarc/badge.svg)](https://coveralls.io/r/msimerson/mail-dmarc)
 
 =head1 CLASSES
 
@@ -624,7 +603,3 @@ This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
 =cut
-
-__END__
-sub {}  # for vim automatic code folding
-
