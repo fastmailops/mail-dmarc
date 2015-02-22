@@ -1,5 +1,5 @@
 package Mail::DMARC::Report::Aggregate::Record::Auth_Results::SPF;
-our $VERSION = '1.20150217'; # VERSION
+our $VERSION = '1.20150222'; # VERSION
 use strict;
 
 use Carp;
@@ -46,6 +46,8 @@ sub _from_hash {
     my ($self, %args) = @_;
 
     foreach my $key ( keys %args ) {
+        # scope is frequently absent on received reports
+        next if ($key eq 'scope' && !$args{$key});
         $self->$key( $args{$key} );
     }
 
@@ -62,7 +64,7 @@ sub is_valid {
 
     foreach my $f (qw/ domain result scope /) {
         next if $self->{$f};
-        warn "SPF $f is required!\n";
+        warn "SPF $f is required but missing!\n";
         return 0;
     }
 
@@ -88,7 +90,7 @@ Mail::DMARC::Report::Aggregate::Record::Auth_Results::SPF - auth_results/spf sec
 
 =head1 VERSION
 
-version 1.20150217
+version 1.20150222
 
 =head1 AUTHORS
 

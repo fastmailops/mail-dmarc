@@ -1,5 +1,5 @@
 package Mail::DMARC;
-our $VERSION = '1.20150217'; # VERSION
+our $VERSION = '1.20150222'; # VERSION
 use strict;
 use warnings;
 
@@ -21,7 +21,11 @@ sub new {
         config_file => 'mail-dmarc.ini',
         }, $class;
 
-    foreach my $key ( keys %args ) {
+    my @keys = sort { $a eq 'config_file' ? -1
+                    : $b eq 'config_file' ?  1
+                    : ($a cmp $b) } keys %args;
+
+    foreach my $key ( @keys ) {
         if ($self->can($key)) {
             $self->$key( $args{$key} );
         }
@@ -245,7 +249,7 @@ Mail::DMARC - Perl implementation of DMARC
 
 =head1 VERSION
 
-version 1.20150217
+version 1.20150222
 
 =head1 SYNOPSIS
 

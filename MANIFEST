@@ -44,7 +44,6 @@ lib/Mail/DMARC/Report/Store/SQL.pm
 lib/Mail/DMARC/Report/URI.pm
 lib/Mail/DMARC/Result.pm
 lib/Mail/DMARC/Result/Reason.pm
-mail-dmarc.ini
 share/dmarc-report-2013-draft.xsd
 share/dmarc_whitelist
 share/html/css/ellipsis-xbl.xml
