@@ -1,5 +1,5 @@
 package Mail::DMARC::Report::Aggregate;
-our $VERSION = '1.20150222'; # VERSION
+our $VERSION = '1.20150223'; # VERSION
 use strict;
 use warnings;
 
@@ -142,7 +142,7 @@ sub get_policy_evaluated_as_xml {
     my $pe = "\t\t\t<policy_evaluated>\n";
 
     foreach my $f (qw/ disposition dkim spf /) {
-        $pe .= "\t\t\t\t<$f>$rec->row->policy_evaluated->$f</$f>\n";
+        $pe .= "\t\t\t\t<$f>$rec->{row}{policy_evaluated}{$f}</$f>\n";
     }
 
     my $reasons = $rec->{row}{policy_evaluated}{reason};
@@ -169,7 +169,7 @@ Mail::DMARC::Report::Aggregate - aggregate report object
 
 =head1 VERSION
 
-version 1.20150222
+version 1.20150223
 
 =head1 DESCRIPTION
 
