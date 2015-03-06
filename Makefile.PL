@@ -50,7 +50,6 @@ my %WriteMakefileArgs = (
     "Encode" => 0,
     "English" => 0,
     "File::ShareDir" => 0,
-    "File::ShareDir::Install" => 0,
     "Getopt::Long" => 0,
     "HTTP::Request" => 0,
     "HTTP::Tiny" => 0,
@@ -90,7 +89,7 @@ my %WriteMakefileArgs = (
     "Test::More" => 0,
     "Test::Output" => 0
   },
-  "VERSION" => "1.20150301",
+  "VERSION" => "1.20150306",
   "test" => {
     "TESTS" => "t/*.t"
   }

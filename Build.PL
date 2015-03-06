@@ -21,7 +21,7 @@ my %module_build_args = (
     "Davide Migliavacca <shari\@cpan.org>"
   ],
   "dist_name" => "Mail-DMARC",
-  "dist_version" => "1.20150301",
+  "dist_version" => "1.20150306",
   "license" => "perl",
   "module_name" => "Mail::DMARC",
   "recommends" => {
@@ -50,7 +50,6 @@ my %module_build_args = (
     "Encode" => 0,
     "English" => 0,
     "File::ShareDir" => 0,
-    "File::ShareDir::Install" => 0,
     "Getopt::Long" => 0,
     "HTTP::Request" => 0,
     "HTTP::Tiny" => 0,
