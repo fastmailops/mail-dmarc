@@ -1,8 +1,11 @@
 
-1.20150306 2015-03-06 Australia/Melbourne
+1.20150311 2015-03-11 Australia/Melbourne
+
+1.20150310 2015-03-10 America/Los_Angeles
+ - lower case domain names at entry points (resolves #53)
+ - tolerate substitution of = with : in DMARC DNS rec
 
 1.20150228 2015-02-27 America/Los_Angeles
-
 
  - fix the policy_evaluated fields in outbound reports
  - accommodate a common DMARC error substiting = with :
