@@ -81,9 +81,10 @@ resources:
   bugtracker: https://github.com/msimerson/mail-dmarc/issues
   homepage: https://github.com/msimerson/mail-dmarc/wiki
   repository: git://github.com/msimerson/mail-dmarc.git
-version: '1.20150506'
+version: '1.20150525'
 x_contributors:
   - 'Benny Pedersen <me@junc.eu>'
+  - 'Making GitHub Delicious. <iron@waffle.io>'
   - 'Marc Bradshaw <marc@marcbradshaw.net>'
   - 'Ricardo Signes <rjbs@cpan.org>'
   - 'Ricardo Signes <rjbs@users.noreply.github.com>'
