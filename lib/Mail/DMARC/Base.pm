@@ -1,5 +1,5 @@
 package Mail::DMARC::Base;
-our $VERSION = '1.20150525'; # VERSION
+our $VERSION = '1.20150527'; # VERSION
 use strict;
 use warnings;
 
@@ -309,7 +309,7 @@ Mail::DMARC::Base - DMARC utility functions
 
 =head1 VERSION
 
-version 1.20150525
+version 1.20150527
 
 =head1 METHODS
 

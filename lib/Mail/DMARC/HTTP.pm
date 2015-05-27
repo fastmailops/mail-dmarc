@@ -1,5 +1,5 @@
 package Mail::DMARC::HTTP;
-our $VERSION = '1.20150525'; # VERSION
+our $VERSION = '1.20150527'; # VERSION
 use strict;
 use warnings;
 
@@ -212,7 +212,7 @@ Mail::DMARC::HTTP - view stored reports via HTTP
 
 =head1 VERSION
 
-version 1.20150525
+version 1.20150527
 
 =head1 SYNOPSIS
 

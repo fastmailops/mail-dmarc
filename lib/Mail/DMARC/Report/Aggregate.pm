@@ -1,5 +1,5 @@
 package Mail::DMARC::Report::Aggregate;
-our $VERSION = '1.20150525'; # VERSION
+our $VERSION = '1.20150527'; # VERSION
 use strict;
 use warnings;
 
@@ -132,19 +132,13 @@ sub get_policy_published_as_xml {
     foreach my $f (qw/ adkim aspf p sp pct /) {
         my $v = $pp->{$f};
         # Set some default values for missing optional fields if necessary
-        if ( $f eq 'adkim' && !defined $v ) {
-            $v = 'r';
-        }
-        if ( $f eq 'aspf' && !defined $v ) {
-            $v = 'r';
-        }
         if ( $f eq 'sp' && !defined $v ) {
             $v = $pp->{'p'};
         }
         if ( $f eq 'pct' && !defined $v ) {
             $v = '100';
         }
-        next if !defined $v; # Should never happen
+        next if !defined $v;
         $xml .= "\t\t<$f>$v</$f>\n";
     }
     $xml .= "\t</policy_published>";
@@ -183,7 +177,7 @@ Mail::DMARC::Report::Aggregate - aggregate report object
 
 =head1 VERSION
 
-version 1.20150525
+version 1.20150527
 
 =head1 DESCRIPTION
 
