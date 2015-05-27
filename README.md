@@ -1,11 +1,10 @@
-[![Stories in Ready](https://badge.waffle.io/msimerson/mail-dmarc.png?label=ready&title=Ready)](https://waffle.io/msimerson/mail-dmarc)
 # NAME
 
 Mail::DMARC - Perl implementation of DMARC
 
 # VERSION
 
-version 1.20150317
+version 1.20150527
 
 # SYNOPSIS
 
@@ -72,6 +71,8 @@ The report store can use the same database to store reports you have received as
 [![Build Status](https://travis-ci.org/msimerson/mail-dmarc.svg?branch=master)](https://travis-ci.org/msimerson/mail-dmarc)
 
 [![Coverage Status](https://coveralls.io/repos/msimerson/mail-dmarc/badge.svg)](https://coveralls.io/r/msimerson/mail-dmarc)
+
+[![Stories in Ready](https://badge.waffle.io/msimerson/mail-dmarc.png?label=ready&title=Ready)](https://waffle.io/msimerson/mail-dmarc)
 
 # CLASSES
 
@@ -194,7 +195,7 @@ The dkim results can also be build iteratively by passing in key value pairs or 
 
 Each hash or hashref is appended to the dkim array.
 
-Finally, you can pass a coderef which won't be called until the dkim method is used to read the dkim results.  It must return an array reference as described above.  As a convenience, your can return the result of calling `$dmarc->dkim_from_mail_dkim($dkim_verifier)` to produce such an arrayref from a Mail::DKIM::Verifier object.
+Finally, you can pass a coderef which won't be called until the dkim method is used to read the dkim results.  It must return an array reference as described above.
 
 The dkim result is an array reference.
 
@@ -284,7 +285,9 @@ Qpsmtpd plugin: https://github.com/smtpd/qpsmtpd/blob/master/plugins/dmarc
 # CONTRIBUTORS
 
 - Benny Pedersen <me@junc.eu>
+- Making GitHub Delicious. <iron@waffle.io>
 - Marc Bradshaw <marc@marcbradshaw.net>
+- Priyadi Iman Nurcahyo <priyadi@priyadi.net>
 - Ricardo Signes <rjbs@cpan.org>
 - Ricardo Signes <rjbs@users.noreply.github.com>
 

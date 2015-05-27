@@ -287,6 +287,8 @@ __END__
 
 =for markdown [![Coverage Status](https://coveralls.io/repos/msimerson/mail-dmarc/badge.svg)](https://coveralls.io/r/msimerson/mail-dmarc)
 
+=for markdown [![Stories in Ready](https://badge.waffle.io/msimerson/mail-dmarc.png?label=ready&title=Ready)](https://waffle.io/msimerson/mail-dmarc)
+
 =head1 SYNOPSIS
 
 DMARC: Domain-based Message Authentication, Reporting and Conformance
@@ -505,7 +507,7 @@ The dkim results can also be build iteratively by passing in key value pairs or 
 
 Each hash or hashref is appended to the dkim array.
 
-Finally, you can pass a coderef which won't be called until the dkim method is used to read the dkim results.  It must return an array reference as described above.  As a convenience, your can return the result of calling C<< $dmarc->dkim_from_mail_dkim($dkim_verifier) >> to produce such an arrayref from a Mail::DKIM::Verifier object.
+Finally, you can pass a coderef which won't be called until the dkim method is used to read the dkim results.  It must return an array reference as described above.
 
 The dkim result is an array reference.
 
