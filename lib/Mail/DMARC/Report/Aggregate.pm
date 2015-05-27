@@ -138,7 +138,7 @@ sub get_policy_published_as_xml {
         if ( $f eq 'pct' && !defined $v ) {
             $v = '100';
         }
-        next if !defined $v; # Should never happen
+        next if !defined $v;
         $xml .= "\t\t<$f>$v</$f>\n";
     }
     $xml .= "\t</policy_published>";
