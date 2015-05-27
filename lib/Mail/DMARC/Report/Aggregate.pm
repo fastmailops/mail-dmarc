@@ -132,12 +132,6 @@ sub get_policy_published_as_xml {
     foreach my $f (qw/ adkim aspf p sp pct /) {
         my $v = $pp->{$f};
         # Set some default values for missing optional fields if necessary
-        if ( $f eq 'adkim' && !defined $v ) {
-            $v = 'r';
-        }
-        if ( $f eq 'aspf' && !defined $v ) {
-            $v = 'r';
-        }
         if ( $f eq 'sp' && !defined $v ) {
             $v = $pp->{'p'};
         }
