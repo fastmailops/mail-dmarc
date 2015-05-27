@@ -293,6 +293,7 @@ sub is_whitelisted {
 
 sub has_valid_reporting_uri {
     my ( $self, $rua ) = @_;
+    return unless $rua;
     my $recips_ref = $self->report->uri->parse($rua);
     my @has_permission;
     foreach my $uri_ref (@$recips_ref) {
@@ -311,10 +312,6 @@ sub get_dkim_pass_sigs {
     my $self = shift;
 
     my $dkim_sigs = $self->dkim or return ();    # message not signed
-
-    if ( ref $dkim_sigs eq 'Mail::DKIM::Verifier' ) {
-        $dkim_sigs = $self->dkim_from_mail_dkim($dkim_sigs);
-    };
 
     if ( 'ARRAY' ne ref $dkim_sigs ) {
         croak "dkim needs to be an array reference!";
