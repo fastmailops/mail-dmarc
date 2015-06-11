@@ -69,6 +69,7 @@ requires:
   Socket: '0'
   Socket6: '0.23'
   Sys::Hostname: '0'
+  Sys::Syslog: '0'
   Test::File::ShareDir: '0'
   URI: '0'
   XML::LibXML: '0'
@@ -81,7 +82,7 @@ resources:
   bugtracker: https://github.com/msimerson/mail-dmarc/issues
   homepage: https://github.com/msimerson/mail-dmarc/wiki
   repository: git://github.com/msimerson/mail-dmarc.git
-version: '1.20150527'
+version: '1.20150611'
 x_contributors:
   - 'Benny Pedersen <me@junc.eu>'
   - 'Making GitHub Delicious. <iron@waffle.io>'

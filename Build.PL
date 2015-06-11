@@ -21,7 +21,7 @@ my %module_build_args = (
     "Davide Migliavacca <shari\@cpan.org>"
   ],
   "dist_name" => "Mail-DMARC",
-  "dist_version" => "1.20150527",
+  "dist_version" => "1.20150611",
   "license" => "perl",
   "module_name" => "Mail::DMARC",
   "recommends" => {
@@ -76,6 +76,7 @@ my %module_build_args = (
     "Socket" => 0,
     "Socket6" => "0.23",
     "Sys::Hostname" => 0,
+    "Sys::Syslog" => 0,
     "Test::File::ShareDir" => 0,
     "URI" => 0,
     "XML::LibXML" => 0,

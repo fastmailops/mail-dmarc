@@ -1,5 +1,7 @@
 
-1.20150527 2015-05-27 Australia/Melbourne
+1.20150611 2015-06-11 Australia/Melbourne
+
+ - Optionall log sending of reports to syslog
 
 1.20150527 2015-05-26 America/Los_Angeles
 
