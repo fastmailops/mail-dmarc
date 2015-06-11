@@ -350,6 +350,13 @@ sub email {
         return;
     };
 
+    my $accept = $smtp->code ." ". $smtp->message;
+    print "SMTP accepted\n\t$accept\n";
+    syslog( LOG_INFO, join( ', ',
+        'id='          . $rid,
+        'smtp_accept=' . $accept,
+    ) ) if $syslog;
+
     $smtp->quit;
     return 1;
 }
