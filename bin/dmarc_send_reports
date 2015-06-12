@@ -352,6 +352,7 @@ sub email {
 
     my @accepts = $smtp->message;
     my $accept = $smtp->code . ' ' . pop @accepts;
+    $accept =~ s/\r$//;
     print "SMTP accepted\n\t$accept\n";
     syslog( LOG_INFO, join( ', ',
         'id='          . $rid,
