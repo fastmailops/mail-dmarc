@@ -1,5 +1,5 @@
 #!/usr/bin/perl
-our $VERSION = '1.20150612'; # VERSION
+our $VERSION = '1.20150615'; # VERSION
 use strict;
 use warnings;
 
@@ -70,11 +70,11 @@ while (defined(my $aggregate = $report->store->retrieve_todo ) ) {
     print 'Domain: ' . $aggregate->policy_published->domain . "\n";
     print 'rua:    ' . $aggregate->policy_published->rua . "\n";
 
-    syslog( LOG_INFO, join( ', ',
-        'id='     . $aggregate->metadata->report_id,
-        'domain=' . $aggregate->policy_published->domain,
-        'rua='    . $aggregate->policy_published->rua,
-    ) ) if $syslog;
+    log_to_syslog({
+        'id'     => $aggregate->metadata->report_id,
+        'domain' => $aggregate->policy_published->domain,
+        'rua'    => $aggregate->policy_published->rua,
+    });
 
     my $xml = $aggregate->as_xml();
 #   warn $xml;  ## no critic (Carp)
@@ -89,10 +89,10 @@ while (defined(my $aggregate = $report->store->retrieve_todo ) ) {
 
     if ( scalar @{ $uri_ref } == 0 ) {
         print "No valid ruas found, deleting report\n";
-       syslog( LOG_INFO, join( ', ',
-            'id=' . $aggregate->metadata->report_id,
-            'error=No valid ruas found - deleting report',
-        ) ) if $syslog;
+       log_to_syslog({
+            'id'    =>  $aggregate->metadata->report_id,
+            'error' => 'No valid ruas found - deleting report',
+        });
         $report->store->delete_report($aggregate->metadata->report_id);
         next;
     }
@@ -106,10 +106,10 @@ while (defined(my $aggregate = $report->store->retrieve_todo ) ) {
 
         if ( $max && $bytes > $max ) {
 # TODO: try compressing the report with gzip -9 ?
-           syslog( LOG_INFO, join( ', ',
-                'id=' . $aggregate->metadata->report_id,
-                "info=skipping $method: report size ($bytes) larger than $max",
-            ) ) if $syslog;
+           log_to_syslog({
+                'id'   => $aggregate->metadata->report_id,
+                "info' => 'skipping $method: report size ($bytes) larger than $max",
+            });
             print "skipping $method: report size ($bytes) larger than $max\n";
             push @too_big, $method;
             next;
@@ -183,10 +183,10 @@ sub get_smtp_connection {
 
     my $smtp = $report->sendit->smtp->connect_smtp_tls( $to ) or do {
         warn "\tSSL connection failed\n";  ## no critic (Carp)
-        syslog( LOG_INFO, join( ', ',
-            'id=' . $rid,
-            'error=SSL connection failed',
-        ) ) if $syslog;
+        log_to_syslog({
+            'id'    => $rid,
+            'error' => 'SSL connection failed',
+        });
         if ( $agg_ref ) {
             $$agg_ref->metadata->error("SSL connection failed");
             my $xml = $$agg_ref->as_xml();   # re-export XML, with error
@@ -197,27 +197,27 @@ sub get_smtp_connection {
     if ( ! $smtp ) {
         $smtp = $report->sendit->smtp->connect_smtp( $to ) or do {
             warn "\tSMTP connection failed\n";  ## no critic (Carp)
-            syslog( LOG_INFO, join( ', ',
-                'id=' . $rid,
-                'error=SMTP connection failed',
-            ) ) if $syslog;
+            log_to_syslog({
+                'id'    => $rid,
+                'error' => 'SMTP connection failed',
+            });
             if ( $rid ) {
                 my $errors = scalar $$agg_ref->metadata->error;
                 if ( $errors >= 12 ) {
                     print "Report $rid deleted (too many errors)\n";
-                    syslog( LOG_INFO, join( ', ',
-                        'id=' . $rid,
-                        'error=Report deleted, too many errors',
-                    ) ) if $syslog;
+                    log_to_syslog({
+                        'id'    => $rid,
+                        'error' => 'Report deleted, too many errors',
+                    });
                     $report->store->delete_report($rid);
                 }
                 else {
                     $report->store->error($rid, "SSL connection for $to failed");
                     $report->store->error($rid, "SMTP connection for $to failed");
-                    syslog( LOG_INFO, join( ', ',
-                        'id='         . $rid,
-                        'errorcount=' . $errors,
-                    ) ) if $syslog;
+                    log_to_syslog({
+                        'id'         => $rid,
+                        'errorcount' => $errors,
+                    });
                 };
             };
             return;
@@ -226,10 +226,10 @@ sub get_smtp_connection {
 
     if ( ! $smtp ) {
         warn "\t0 MX available\n";
-        syslog( LOG_INFO, join( ', ',
-            'id=' . $rid,
-            'info=0 MX available',
-        ) ) if $syslog;
+        log_to_syslog({
+            'id'   => $rid,
+            'info' => '0 MX available',
+        });
         return;
     };
 
@@ -244,21 +244,21 @@ sub email {
 
     my $smtp = get_smtp_connection($to,$shrunk,$agg_ref) or return;
     print "delivering message to $to, via ".$smtp->host."\n";
-    syslog( LOG_INFO, join( ', ',
-        'id=' . $rid,
-        'deliver_to=' . $to,
-        'smtp_via='   . $smtp->host,
-    ) ) if $syslog;
+    log_to_syslog({
+        'id'         => $rid,
+        'deliver_to' => $to,
+        'smtp_via'   => $smtp->host,
+    });
 
     my $from = $report->config->{organization}{email};
     $smtp->mail($from) or do {
         my $err = $smtp->code ." ". $smtp->message;
         print "MAIL FROM $from rejected\n\t$err\n";
-        syslog( LOG_INFO, join( ', ',
-            'id='          . $rid,
-            'mail_from='   . $from,
-            'smtp_error='  . $err,
-        ) ) if $syslog;
+        log_to_syslog({
+            'id'         => $rid,
+            'mail_from'  => $from,
+            'smtp_error' => $err,
+        });
         $report->store->error($rid, $err) if $rid;
         $smtp->quit;
         return;
@@ -267,19 +267,19 @@ sub email {
     $smtp->recipient( $to ) or do {
         my $err = $smtp->code ." ". $smtp->message;
         print "RCPT TO $to rejected\n\t$err\n";
-        syslog( LOG_INFO, join( ', ',
-            'id='          . $rid,
-            'rcpt_to='     . $to,
-            'smtp_error='  . $err,
-        ) ) if $syslog;
+        log_to_syslog({
+            'id'         => $rid,
+            'rcpt_to'    => $to,
+            'smtp_error' => $err,
+        });
         if ( $rid ) {
             if ( $smtp->code =~ /^5/ ) {  # SMTP 5XX error
                 print "Report $rid deleted \n";
-                syslog( LOG_INFO, join( ', ',
-                    'id=' . $rid,
-                    'error=Report deleted',
-                    'smtp_code='  . $smtp->code,
-                ) ) if $syslog;
+                log_to_syslog({
+                    'id'        => $rid,
+                    'error'     => 'Report deleted',
+                    'smtp_code' => $smtp->code,
+                });
                 $report->store->delete_report($rid);
             }
             else {
@@ -316,11 +316,11 @@ sub email {
         };
         if ( my $error = $@ ) {
             print "DKIM Signing error\n\t$error\n";
-            syslog( LOG_INFO, join( ', ',
-                'id=' . $rid,
-                'error=DKIM Signing error',
-                'error_detail=' . $error,
-            ) ) if $syslog;
+            log_to_syslog({
+                'id'           => $rid,
+                'error'        => 'DKIM Signing error',
+                'error_detail' => $error,
+            });
             $smtp->quit;
             return;
         }
@@ -331,20 +331,20 @@ sub email {
         if ( $agg_ref ) {
             my $to_domain = $$agg_ref->policy_published->domain;
             print "DATA for domain $to_domain report rejected\n\t$err\n";
-            syslog( LOG_INFO, join( ', ',
-                'id=' . $rid,
-                'error=DATA rejected',
-                'to_domain='    . $to_domain,
-                'error_detail=' . $err,
-            ) ) if $syslog;
+            log_to_syslog({
+                'id'           => $rid,
+                'error'        => 'DATA rejected',
+                'to_domain'    => $to_domain,
+                'error_detail' => $err,
+            });
         }
         else {
             print "DATA for report rejected\n\t$err\n";
-            syslog( LOG_INFO, join( ', ',
-                'id=' . $rid,
-                'error=DATA rejected',
-                'error_detail=' . $err,
-            ) ) if $syslog;
+            log_to_syslog({
+                'id'           => $rid,
+                'error'        => 'DATA rejected',
+                'error_detail' => $err,
+            });
         };
         $report->store->error($rid, $err) if $rid;
         return;
@@ -354,13 +354,35 @@ sub email {
     my $accept = $smtp->code . ' ' . pop @accepts;
     $accept =~ s/\r$//;
     print "SMTP accepted\n\t$accept\n";
-    syslog( LOG_INFO, join( ', ',
-        'id='          . $rid,
-        'smtp_accept=' . $accept,
-    ) ) if $syslog;
+    log_to_syslog({
+        'id'          => $rid,
+        'smtp_accept' => $accept,
+    });
 
     $smtp->quit;
     return 1;
+}
+
+sub log_to_syslog {
+    my ( $args ) = @_;
+    return if ! $syslog;
+
+    my $log_level = LOG_INFO;
+    if ( $args->{'log_level'} ) {
+        $log_level = $args->{'log_level'};
+        delete $args->{'log_level'};
+    }
+
+    my @parts;
+    foreach my $key ( sort keys %$args ) {
+        my $value = $args->{ $key };
+        $value =~ s/,/#044/g; # Encode commas
+        push @parts, join( '=', $key, $value );
+    }
+
+    syslog( $log_level, join( ', ', @parts ) );
+
+    return;
 }
 
 __END__
@@ -373,7 +395,7 @@ dmarc_send_reports - send aggregate reports
 
 =head1 VERSION
 
-version 1.20150612
+version 1.20150615
 
 =head1 AUTHORS
 
