@@ -66,6 +66,7 @@ my %WriteMakefileArgs = (
     "Mail::DKIM::TextWrap" => 0,
     "Net::DNS::Resolver" => 0,
     "Net::HTTP" => 0,
+    "Net::IDN::Encode" => 0,
     "Net::IP" => 0,
     "Net::SMTPS" => 0,
     "Net::SSLeay" => 0,
@@ -90,7 +91,7 @@ my %WriteMakefileArgs = (
     "Test::More" => 0,
     "Test::Output" => 0
   },
-  "VERSION" => "1.20150615",
+  "VERSION" => "1.20150708",
   "test" => {
     "TESTS" => "t/*.t"
   }
@@ -129,6 +130,7 @@ my %FallbackPrereqs = (
   "Module::Build" => "0.3601",
   "Net::DNS::Resolver" => 0,
   "Net::HTTP" => 0,
+  "Net::IDN::Encode" => 0,
   "Net::IP" => 0,
   "Net::SMTPS" => 0,
   "Net::SSLeay" => 0,

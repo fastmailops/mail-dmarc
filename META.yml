@@ -59,6 +59,7 @@ requires:
   Mail::DKIM::TextWrap: '0'
   Net::DNS::Resolver: '0'
   Net::HTTP: '0'
+  Net::IDN::Encode: '0'
   Net::IP: '0'
   Net::SMTPS: '0'
   Net::SSLeay: '0'
@@ -82,7 +83,7 @@ resources:
   bugtracker: https://github.com/msimerson/mail-dmarc/issues
   homepage: https://github.com/msimerson/mail-dmarc/wiki
   repository: git://github.com/msimerson/mail-dmarc.git
-version: '1.20150615'
+version: '1.20150708'
 x_contributors:
   - 'Benny Pedersen <me@junc.eu>'
   - 'Making GitHub Delicious. <iron@waffle.io>'
