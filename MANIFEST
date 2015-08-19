@@ -121,6 +121,7 @@ t/13.Report.Aggregate.t
 t/14.Report.Aggregate.Metadata.t
 t/15.Report.Aggregate.Record.t
 t/16.Report.Aggregate.Record.Auth_Results.t
+t/17.Report.Aggregate.Schema.t
 t/20.Report.URI.t
 t/21.Report.Send.t
 t/22.Report.Send.SMTP.t
@@ -130,4 +131,5 @@ t/author-critic.t
 t/mail-dmarc.ini
 t/perlcritic.rc
 t/release-pod-syntax.t
+t/rua-schema.xsd
 t/whitelist

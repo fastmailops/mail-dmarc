@@ -21,7 +21,7 @@ my %module_build_args = (
     "Davide Migliavacca <shari\@cpan.org>"
   ],
   "dist_name" => "Mail-DMARC",
-  "dist_version" => "1.20150818",
+  "dist_version" => "1.20150819",
   "license" => "perl",
   "module_name" => "Mail::DMARC",
   "recommends" => {
@@ -101,6 +101,7 @@ my %module_build_args = (
     "dist" => "share"
   },
   "test_requires" => {
+    "Test::Exception" => 0,
     "Test::File::ShareDir" => 0,
     "Test::More" => 0,
     "Test::Output" => 0
@@ -110,6 +111,7 @@ my %module_build_args = (
 
 my %fallback_build_requires = (
   "Module::Build" => "0.3601",
+  "Test::Exception" => 0,
   "Test::File::ShareDir" => 0,
   "Test::More" => 0,
   "Test::Output" => 0
