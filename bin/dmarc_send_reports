@@ -256,6 +256,7 @@ sub email {
         $report->store->error($rid, $error);
         return;
     }
+    return if ! $smtp;
 
     print "delivering message to $to, via ".$smtp->host."\n";
     log_to_syslog({
