@@ -1,5 +1,5 @@
 package Mail::DMARC::Report::Send::SMTP;
-our $VERSION = '1.20150819'; # VERSION
+our $VERSION = '1.20150908'; # VERSION
 use strict;
 use warnings;
 
@@ -65,7 +65,7 @@ sub connect_smtp_tls {
         Port            => $self->config->{smtp}{smarthost} ? 587 : 25,
         Hello           => $self->get_helo_hostname,
         doSSL           => 'starttls',
-        SSL_verify_mode => 'SSL_VERIFY_NONE',
+        SSL_verify_mode => IO::Socket::SSL::SSL_VERIFY_NONE,
         Debug           => $self->verbose ? 1 : 0,
         )
         or do {
@@ -228,7 +228,7 @@ Mail::DMARC::Report::Send::SMTP - utility methods for sending reports via SMTP
 
 =head1 VERSION
 
-version 1.20150819
+version 1.20150908
 
 =head2 SUBJECT FIELD
 
