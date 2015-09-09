@@ -44,7 +44,6 @@ lib/Mail/DMARC/Report/Store/SQL.pm
 lib/Mail/DMARC/Report/URI.pm
 lib/Mail/DMARC/Result.pm
 lib/Mail/DMARC/Result/Reason.pm
-share/dmarc-report-2013-draft.xsd
 share/dmarc_whitelist
 share/html/css/ellipsis-xbl.xml
 share/html/css/ui.jqgrid.css
@@ -108,6 +107,7 @@ share/mail-dmarc.ini
 share/mail_dmarc_schema.mysql
 share/mail_dmarc_schema.sqlite
 share/public_suffix_list
+share/rua-schema.xsd
 t/00.Dmarc.t
 t/01.Policy.t
 t/03.Base.t
@@ -131,5 +131,4 @@ t/author-critic.t
 t/mail-dmarc.ini
 t/perlcritic.rc
 t/release-pod-syntax.t
-t/rua-schema.xsd
 t/whitelist

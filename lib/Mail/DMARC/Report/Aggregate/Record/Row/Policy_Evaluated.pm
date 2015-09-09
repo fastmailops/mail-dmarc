@@ -1,5 +1,5 @@
 package Mail::DMARC::Report::Aggregate::Record::Row::Policy_Evaluated;
-our $VERSION = '1.20150908'; # VERSION
+our $VERSION = '1.20150909'; # VERSION
 use strict;
 use warnings;
 
@@ -18,6 +18,8 @@ sub new {
 
 sub disposition {
     return $_[0]->{disposition} if 1 == scalar @_;
+    croak "invalid disposition ($_[1]"
+        if 0 == grep {/^$_[1]$/ix} qw/ reject quarantine none /;
     return $_[0]->{disposition} =  $_[1];
 }
 
@@ -56,7 +58,7 @@ Mail::DMARC::Report::Aggregate::Record::Row::Policy_Evaluated - row/policy_evalu
 
 =head1 VERSION
 
-version 1.20150908
+version 1.20150909
 
 =head1 AUTHORS
 
