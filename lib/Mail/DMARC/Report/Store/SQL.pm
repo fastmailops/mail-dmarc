@@ -1,5 +1,5 @@
 package Mail::DMARC::Report::Store::SQL;
-our $VERSION = '1.20151217'; # VERSION
+our $VERSION = '1.20160212'; # VERSION
 use strict;
 use warnings;
 
@@ -76,22 +76,27 @@ sub retrieve {
 sub retrieve_todo {
     my ( $self, @args ) = @_;
 
-    # this method extracts the data from the SQL tables and populates an
-    # Aggregate report object with it.
+    # this method extracts the data from the SQL tables and populates a
+    # list of Aggregate report objects with them.
     my $reports = $self->query( $self->get_todo_query, [ time ] );
     return if ! @$reports;
-    my $report = $reports->[0];
+    my @reports_todo;
 
-    my $agg = Mail::DMARC::Report::Aggregate->new();
-    $self->populate_agg_metadata( \$agg, \$report );
+    foreach my $report ( @{ $reports } ) {
 
-    my $pp = $self->get_report_policy_published( $report->{rid} );
-    $pp->{domain} = $report->{from_domain};
-    $agg->policy_published( Mail::DMARC::Policy->new( %$pp ) );
+        my $agg = Mail::DMARC::Report::Aggregate->new();
+        $self->populate_agg_metadata( \$agg, \$report );
 
-    $self->populate_agg_records( \$agg, $report->{rid} );
-    return $agg;
+        my $pp = $self->get_report_policy_published( $report->{rid} );
+        $pp->{domain} = $report->{from_domain};
+        $agg->policy_published( Mail::DMARC::Policy->new( %$pp ) );
+
+        $self->populate_agg_records( \$agg, $report->{rid} );
+        push @reports_todo, $agg;
+    }
+    return \@reports_todo;
 }
+
 
 sub delete_report {
     my $self = shift;
@@ -283,9 +288,7 @@ LEFT JOIN domain fd ON r.from_domain_id=fd.id
 WHERE rr.count IS NULL
   AND rr.report_id IS NOT NULL
   AND r.end < ?
-GROUP BY r.id
 ORDER BY r.id
-LIMIT 1
 EO_TODO_QUERY
 ;
 }
@@ -725,7 +728,7 @@ Mail::DMARC::Report::Store::SQL - store and retrieve reports from a SQL RDBMS
 
 =head1 VERSION
 
-version 1.20151217
+version 1.20160212
 
 =head1 DESCRIPTION
 
