@@ -1,5 +1,5 @@
 package Mail::DMARC::Report::Store::SQL;
-our $VERSION = '1.20160212'; # VERSION
+our $VERSION = '1.20160213'; # VERSION
 use strict;
 use warnings;
 
@@ -288,6 +288,7 @@ LEFT JOIN domain fd ON r.from_domain_id=fd.id
 WHERE rr.count IS NULL
   AND rr.report_id IS NOT NULL
   AND r.end < ?
+GROUP BY r.id
 ORDER BY r.id
 EO_TODO_QUERY
 ;
@@ -728,7 +729,7 @@ Mail::DMARC::Report::Store::SQL - store and retrieve reports from a SQL RDBMS
 
 =head1 VERSION
 
-version 1.20160212
+version 1.20160213
 
 =head1 DESCRIPTION
 
