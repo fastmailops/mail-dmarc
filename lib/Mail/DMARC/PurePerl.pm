@@ -1,5 +1,5 @@
 package Mail::DMARC::PurePerl;
-our $VERSION = '1.20160213'; # VERSION
+our $VERSION = '1.20160504'; # VERSION
 use strict;
 use warnings;
 
@@ -98,6 +98,7 @@ sub discover_policy {
     # 9.1  Mail Receivers MUST query the DNS for a DMARC TXT record
     my ($matches, $at_dom) = $self->fetch_dmarc_record( $from_dom, $org_dom );
     if (0 == scalar @$matches ) {
+        $self->result->result('none');
         $self->result->reason( type => 'other', comment => 'no policy' );
         return;
     };
@@ -559,7 +560,7 @@ Mail::DMARC::PurePerl - Pure Perl implementation of DMARC
 
 =head1 VERSION
 
-version 1.20160213
+version 1.20160504
 
 =head1 METHODS
 

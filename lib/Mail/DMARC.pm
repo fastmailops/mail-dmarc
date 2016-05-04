@@ -1,5 +1,5 @@
 package Mail::DMARC;
-our $VERSION = '1.20160213'; # VERSION
+our $VERSION = '1.20160504'; # VERSION
 use strict;
 use warnings;
 
@@ -290,7 +290,7 @@ Mail::DMARC - Perl implementation of DMARC
 
 =head1 VERSION
 
-version 1.20160213
+version 1.20160504
 
 =head1 SYNOPSIS
 
