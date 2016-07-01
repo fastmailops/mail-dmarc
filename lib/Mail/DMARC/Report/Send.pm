@@ -1,9 +1,8 @@
 package Mail::DMARC::Report::Send;
-our $VERSION = '1.20160524'; # VERSION
+our $VERSION = '1.20160701'; # VERSION
 use strict;
 use warnings;
 
-use lib 'lib';
 use parent 'Mail::DMARC::Base';
 use Mail::DMARC::Report::Send::SMTP;
 use Mail::DMARC::Report::Send::HTTP;
@@ -62,7 +61,7 @@ Mail::DMARC::Report::Send - report sending dispatch class
 
 =head1 VERSION
 
-version 1.20160524
+version 1.20160701
 
 =head1 DESCRIPTION
 
