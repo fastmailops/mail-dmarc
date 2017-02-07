@@ -4,7 +4,7 @@ Mail::DMARC - Perl implementation of DMARC
 
 # VERSION
 
-version 1.20160524
+version 1.20170207
 
 # SYNOPSIS
 
@@ -285,6 +285,7 @@ Qpsmtpd plugin: https://github.com/smtpd/qpsmtpd/blob/master/plugins/dmarc
 # CONTRIBUTORS
 
 - Benny Pedersen <me@junc.eu>
+- Giovanni Bechis <giovanni@paclan.it>
 - Jean Paul Galea <jeanpaul@yubico.com>
 - Jean Paul Galea <jp@galea.se>
 - Making GitHub Delicious. <iron@waffle.io>
