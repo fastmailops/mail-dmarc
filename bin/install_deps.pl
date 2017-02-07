@@ -1,5 +1,5 @@
 #!/usr/bin/perl
-our $VERSION = '1.20160701'; # VERSION 1.10
+our $VERSION = '1.20170207'; # VERSION 1.10
 
 use strict;
 use warnings;
@@ -202,7 +202,7 @@ sub install_app_linux {
         system "/usr/bin/yum -y install $rpm";
     }
     elsif ( -x '/usr/bin/apt-get' ) {
-        my $package = $info->{apt} || $app;
+        my $package = lc($info->{apt} || $app);
         system "/usr/bin/apt-get -y install $package";
     }
     else {
@@ -451,10 +451,12 @@ sub name_overrides {
 # couple rules. When that doesn't work, add entries here for FreeBSD (port),
 # MacPorts ($dport), yum, and apt.
     my @modules = (
-        { module=>'LWP::UserAgent', info => { cat=>'www', port=>'p5-libwww', dport=>'p5-libwww-perl', yum=>'perl-libwww-perl' }, },
-        { module=>'Mail::Send'    , info => { port => 'Mail::Tools', }  },
-        { module=>'Date::Parse'   , info => { port => 'TimeDate',    }  },
-        { module=>'LWP'           , info => { port => 'p5-libwww',   }  },
+        { module=>'LWP::UserAgent'    , info => { cat=>'www', port=>'p5-libwww', dport=>'p5-libwww-perl', yum=>'perl-libwww-perl' }, },
+        { module=>'Mail::Send'        , info => { port => 'Mail::Tools', }  },
+        { module=>'Date::Parse'       , info => { port => 'TimeDate',    }  },
+        { module=>'LWP'               , info => { port => 'p5-libwww',   }  },
+        { module=>'Net::DNS::Resolver', info => { apt => 'libnet-dns-perl',     }  },
+        { module=>'DBD::SQLite'       , info => { apt => 'libdbd-sqlite3-perl', }  },
     );
     my ($match) = grep { $_->{module} eq $mod } @modules;
     return $match if $match;
@@ -474,7 +476,7 @@ install_deps.pl - install dependencies with package manager or CPAN
 
 =head1 VERSION
 
-version 1.20160701
+version 1.20170207
 
 =head1 AUTHORS
 
