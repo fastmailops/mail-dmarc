@@ -46,7 +46,7 @@ sub parse {
             $warned++;
             next;
         }
-        $policy{$tag} = $value;
+        $policy{lc $tag} = $value;
     }
     croak "invalid policy" if !$self->is_valid(\%policy);
     return bless \%policy, ref $self;    # inherited defaults + overrides
