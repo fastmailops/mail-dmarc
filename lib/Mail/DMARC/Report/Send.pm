@@ -1,5 +1,5 @@
 package Mail::DMARC::Report::Send;
-our $VERSION = '1.20170904'; # VERSION
+our $VERSION = '1.20170906'; # VERSION
 use strict;
 use warnings;
 
@@ -61,7 +61,7 @@ Mail::DMARC::Report::Send - report sending dispatch class
 
 =head1 VERSION
 
-version 1.20170904
+version 1.20170906
 
 =head1 DESCRIPTION
 

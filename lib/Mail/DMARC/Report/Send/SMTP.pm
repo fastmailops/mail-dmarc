@@ -1,5 +1,5 @@
 package Mail::DMARC::Report::Send::SMTP;
-our $VERSION = '1.20170904'; # VERSION
+our $VERSION = '1.20170906'; # VERSION
 use strict;
 use warnings;
 
@@ -206,8 +206,12 @@ sub assemble_message {
 sub get_timestamp_rfc2822 {
     my ($self, @args) = @_;
     my @ts = scalar @args ? @args : localtime;
-    return POSIX::strftime( '%a, %d %b %Y %H:%M:%S %z', @ts );
-};
+    my $locale = setlocale(LC_CTYPE);
+    setlocale(LC_ALL, 'C');
+    my $timestamp = POSIX::strftime( '%a, %d %b %Y %H:%M:%S %z', @ts );
+    setlocale(LC_ALL, $locale);
+    return $timestamp;
+}
 
 sub get_helo_hostname {
     my $self = shift;
@@ -228,7 +232,7 @@ Mail::DMARC::Report::Send::SMTP - utility methods for sending reports via SMTP
 
 =head1 VERSION
 
-version 1.20170904
+version 1.20170906
 
 =head2 SUBJECT FIELD
 

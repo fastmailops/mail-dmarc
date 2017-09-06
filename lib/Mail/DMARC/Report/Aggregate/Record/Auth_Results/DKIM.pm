@@ -1,5 +1,5 @@
 package Mail::DMARC::Report::Aggregate::Record::Auth_Results::DKIM;
-our $VERSION = '1.20170904'; # VERSION
+our $VERSION = '1.20170906'; # VERSION
 use strict;
 
 use Carp;
@@ -69,6 +69,7 @@ sub is_valid {
             croak "DKIM value $f is required!";
         }
     }
+    return;
 }
 
 1;
@@ -85,7 +86,7 @@ Mail::DMARC::Report::Aggregate::Record::Auth_Results::DKIM - auth_results/dkim s
 
 =head1 VERSION
 
-version 1.20170904
+version 1.20170906
 
 =head1 AUTHORS
 

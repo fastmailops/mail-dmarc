@@ -84,7 +84,7 @@ resources:
   bugtracker: https://github.com/msimerson/mail-dmarc/issues
   homepage: https://github.com/msimerson/mail-dmarc/wiki
   repository: git://github.com/msimerson/mail-dmarc.git
-version: '1.20170904'
+version: '1.20170906'
 x_contributors:
   - 'Benny Pedersen <me@junc.eu>'
   - 'ColocateUSA.net <company@colocateusa.net>'
@@ -94,6 +94,7 @@ x_contributors:
   - 'Making GitHub Delicious. <iron@waffle.io>'
   - 'Marc Bradshaw <marc@marcbradshaw.net>'
   - 'Priyadi Iman Nurcahyo <priyadi@priyadi.net>'
+  - 'Priyadi Iman Nurcahyo <priyadi@users.noreply.github.com>'
   - 'Ricardo Signes <rjbs@cpan.org>'
   - 'Ricardo Signes <rjbs@users.noreply.github.com>'
 x_serialization_backend: 'YAML::Tiny version 1.70'
