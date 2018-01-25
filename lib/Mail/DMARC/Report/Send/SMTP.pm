@@ -1,5 +1,5 @@
 package Mail::DMARC::Report::Send::SMTP;
-our $VERSION = '1.20170906'; # VERSION
+our $VERSION = '1.20180125'; # VERSION
 use strict;
 use warnings;
 
@@ -64,14 +64,21 @@ sub connect_smtp_tls {
         Timeout         => 12,
         Port            => $self->config->{smtp}{smarthost} ? 587 : 25,
         Hello           => $self->get_helo_hostname,
-        doSSL           => 'starttls',
-        SSL_verify_mode => 0,
         Debug           => $self->verbose ? 1 : 0,
         )
         or do {
             warn "SSL connection failed\n"; ## no critic (Carp)
             return;
         };
+
+    my $tls_supported = $smtp->supports('STARTTLS');
+    if ( defined ( $tls_supported ) ) {
+        $smtp->starttls();
+    }
+    else {
+        warn "server does not support STARTTLS\n"; ## no critic (Carp)
+        return;
+    }
 
     my $c = $self->config->{smtp};
     if ( $c->{smarthost} && $c->{smartuser} && $c->{smartpass} ) {
@@ -232,7 +239,7 @@ Mail::DMARC::Report::Send::SMTP - utility methods for sending reports via SMTP
 
 =head1 VERSION
 
-version 1.20170906
+version 1.20180125
 
 =head2 SUBJECT FIELD
 
