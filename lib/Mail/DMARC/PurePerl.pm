@@ -1,5 +1,5 @@
 package Mail::DMARC::PurePerl;
-our $VERSION = '1.20180125'; # VERSION
+our $VERSION = '1.20180917'; # VERSION
 use strict;
 use warnings;
 
@@ -99,7 +99,7 @@ sub save_aggregate {
         my @valid_report_uris = $self->get_valid_reporting_uri($pol->rua);
 
         my $filtered_report_uris = join( ',',
-            map { $_->{'uri'} . ( ( $_->{'max_bytes'} > 0 ) ? ( '!' . $$_->{'max_bytes'} ) : q{} ) }
+            map { $_->{'uri'} . ( ( $_->{'max_bytes'} > 0 ) ? ( '!' . $_->{'max_bytes'} ) : q{} ) }
                 @valid_report_uris
         );
 
@@ -588,7 +588,7 @@ Mail::DMARC::PurePerl - Pure Perl implementation of DMARC
 
 =head1 VERSION
 
-version 1.20180125
+version 1.20180917
 
 =head1 METHODS
 
