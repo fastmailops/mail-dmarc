@@ -71,6 +71,7 @@ foreach my $aggregate ( @{ $todo_reports } ) {
     };
     if ( my $error = $@ ) {
         print "Sending error $error\n" if $verbose;
+        clear_cached_smtp_connection();
         syslog( LOG_INFO, 'error sending report: ' . $error ) if $syslog;
     }
 
@@ -228,6 +229,11 @@ sub send_too_big_email {
     sub get_cached_smtp_connection {
         return $smtp_connection;
     }
+
+    sub clear_cached_smtp_connection {
+        undef $smtp_connection;
+        return;
+    }
 }
 
 sub get_smtp_connection {
@@ -340,10 +346,8 @@ sub email {
             'smtp_error' => $err,
         });
         $report->store->error($rid, $err) if $rid;
-
-        if ( ! $report->config->{smtp}{smarthost} ) {
-            $smtp->quit;
-        }
+        clear_cached_smtp_connection();
+        $smtp->quit;
 
         return;
     };
@@ -370,7 +374,9 @@ sub email {
                 $report->store->error($rid, $err);
             };
         };
+        clear_cached_smtp_connection();
         $smtp->quit;
+
         return;
     };
 
@@ -405,7 +411,6 @@ sub email {
                 'error'        => 'DKIM Signing error',
                 'error_detail' => $error,
             });
-            $smtp->quit;
             return;
         }
     }
@@ -457,7 +462,9 @@ sub email {
         'smtp_accept' => $accept,
     });
 
-    $smtp->quit;
+    if ( ! $report->config->{smtp}{smarthost} ) {
+        $smtp->quit;
+    }
     return 1;
 }
 
