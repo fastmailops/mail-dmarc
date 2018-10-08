@@ -85,6 +85,10 @@ foreach my $aggregate ( @{ $todo_reports } ) {
 
 }
 
+if ( ! $report->config->{smtp}{smarthost} ) {
+    my $cached_smtp = get_cached_smtp_connection();
+    $cached_smtp->quit if $cached_smtp;
+}
 
 alarm(0);
 
@@ -210,10 +214,29 @@ sub send_too_big_email {
         email( $to, $body );
     };
     return;
-};
+}
+
+{ ## no critic
+    my $smtp_connection;
+
+    sub set_cached_smtp_connection {
+        my ( $smtp ) = @_;
+        $smtp_connection = $smtp;
+        return;
+    }
+
+    sub get_cached_smtp_connection {
+        return $smtp_connection;
+    }
+}
 
 sub get_smtp_connection {
     my ($to, $shrunk, $agg_ref) = @_;
+
+    if ( $report->config->{smtp}{smarthost} ) {
+        my $smtp_connection = get_cached_smtp_connection();
+        return $smtp_connection if $smtp_connection;
+    }
 
     my $rid;
     $rid = $$agg_ref->metadata->report_id if $agg_ref;
@@ -259,7 +282,7 @@ sub get_smtp_connection {
             };
             return;
         };
-    };
+    }
 
     if ( ! $smtp ) {
         warn "\t0 MX available\n";
@@ -268,10 +291,15 @@ sub get_smtp_connection {
             'info' => '0 MX available',
         });
         return;
-    };
+    }
+
+    if ( $report->config->{smtp}{smarthost} ) {
+        set_cached_smtp_connection( $smtp );
+    }
 
     return $smtp;
-};
+
+}
 
 sub email {
     my ($to, $shrunk, $agg_ref) = @_;
@@ -312,7 +340,11 @@ sub email {
             'smtp_error' => $err,
         });
         $report->store->error($rid, $err) if $rid;
-        $smtp->quit;
+
+        if ( ! $report->config->{smtp}{smarthost} ) {
+            $smtp->quit;
+        }
+
         return;
     };
 
