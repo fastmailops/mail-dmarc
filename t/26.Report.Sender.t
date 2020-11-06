@@ -111,11 +111,13 @@ foreach my $callback_type ( qw{ method object fail fallback } ) {
         }
         else {
             is( scalar @deliveries, 1, '1 Email sent' );
-            is( $deliveries[0]->{envelope}->{to}->[0], 'rua@fastmaildmarc.com', 'Sent to correct address' );
-            my $body = ${$deliveries[0]->{email}->[0]->{body}};
-            is( $body =~ /This is a DMARC aggregate report for fastmaildmarc.com/, 1, 'Human readable description' );
-            is( $body =~ /1 records.\n0 passed.\n1 failed./, 1, 'Human readable summary');
-            is( $body =~ /Content-Type: application\/gzip/, 1, 'Gzip attachment' );
+            if ( scalar @deliveries ) {
+              is( $deliveries[0]->{envelope}->{to}->[0], 'rua@fastmaildmarc.com', 'Sent to correct address' );
+              my $body = ${$deliveries[0]->{email}->[0]->{body}};
+              is( $body =~ /This is a DMARC aggregate report for fastmaildmarc.com/, 1, 'Human readable description' );
+              is( $body =~ /1 records.\n0 passed.\n1 failed./, 1, 'Human readable summary');
+              is( $body =~ /Content-Type: application\/gzip/, 1, 'Gzip attachment' );
+            }
         }
     };
 

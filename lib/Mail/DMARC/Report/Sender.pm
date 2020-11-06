@@ -183,14 +183,16 @@ sub run {
     local $SIG{'ALRM'} = sub{ die "timeout\n" };
 
     my $batch_do = 1;
-
+warn 'get reports';
     # 1. get reports, one at a time
     REPORT:
     while ( my $aggregate = $report->store->next_todo() ) {
+      warn ' report';
         eval {
             $self->send_report( $aggregate, $report );
         };
         if ( my $error = $@ ) {
+          warn $error;
             syslog( LOG_INFO, 'error sending report: ' . $error ) if $self->{syslog};
         }
 
