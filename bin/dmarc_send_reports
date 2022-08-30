@@ -9,6 +9,11 @@ use Getopt::Long;
 use Sys::Syslog qw(:standard :macros);
 #use XML::LibXML;
 
+# Set strict mode for Email::MIME::ContentType
+# This prevents foo= and foo*0= being set at the same time.
+use Email::MIME::ContentType 1.027;
+$Email::MIME::ContentType::PRE_2231_FORM = 0;
+
 my $send_delay = 5;
 my $batch_size = 1;
 my $alarm_at   = 120;
