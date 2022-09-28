@@ -14,7 +14,7 @@ configure_requires:
   File::ShareDir::Install: '0.06'
   Module::Build: '0.3601'
 dynamic_config: 0
-generated_by: 'Dist::Zilla version 6.012, CPAN::Meta::Converter version 2.150010'
+generated_by: 'Dist::Zilla version 6.017, CPAN::Meta::Converter version 2.150010'
 license: perl
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
@@ -40,6 +40,7 @@ requires:
   DBIx::Simple: '1.35'
   Data::Dumper: '0'
   Email::MIME: '0'
+  Email::MIME::ContentType: '1.027'
   Email::Simple: '0'
   Encode: '0'
   English: '0'
@@ -84,7 +85,7 @@ resources:
   bugtracker: https://github.com/msimerson/mail-dmarc/issues
   homepage: https://github.com/msimerson/mail-dmarc/wiki
   repository: git://github.com/msimerson/mail-dmarc.git
-version: '1.20180917'
+version: '1.20220928'
 x_contributors:
   - 'Benny Pedersen <me@junc.eu>'
   - 'ColocateUSA.net <company@colocateusa.net>'
@@ -97,5 +98,6 @@ x_contributors:
   - 'Priyadi Iman Nurcahyo <priyadi@users.noreply.github.com>'
   - 'Ricardo Signes <rjbs@cpan.org>'
   - 'Ricardo Signes <rjbs@users.noreply.github.com>'
-x_generated_by_perl: v5.28.0
+x_generated_by_perl: v5.34.0
 x_serialization_backend: 'YAML::Tiny version 1.73'
+x_spdx_expression: 'Artistic-1.0-Perl OR GPL-1.0-or-later'

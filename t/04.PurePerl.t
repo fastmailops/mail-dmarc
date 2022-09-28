@@ -229,9 +229,6 @@ sub test_discover_policy {
     };
     is_deeply( $policy, $expected, 'discover_policy, deeply' );
 
-    $policy = $dmarc->discover_policy('multiple.dmarc-qa.com');
-#   warn Dumper($policy);
-    ok( ! $policy, 'discover_policy, 1.3.3 multiple DMARC records not allowed' );
 }
 
 sub get_test_headers {
@@ -464,35 +461,11 @@ sub test_fetch_dmarc_record {
     ($matches) = $dmarc->fetch_dmarc_record('mail-dmarc.tnpi.net');
     is_deeply( $matches, [$test_rec], 'fetch_dmarc_record' );
 
-    ($matches) = $dmarc->fetch_dmarc_record('one_one.test.dmarc-qa.com');
-    my $policy = $dmarc->policy->parse( $matches->[0] );
-    cmp_ok( $policy->p, 'eq', 'reject', "fetch_dmarc_record, 1.2.1 one_one.test.dmarc-qa.com" );
-
     ($matches) = $dmarc->fetch_dmarc_record('dmarc-qafail.com');
     cmp_ok( 0, '==', scalar @$matches, "fetch_dmarc_record, 1.2.2 DNS error");
 
-    ($matches) = $dmarc->fetch_dmarc_record('alt.dmarc-qa.com');
-    $policy = $dmarc->policy->parse( $matches->[0] );
-    cmp_ok( $policy->p, 'eq', 'none', "fetch_dmarc_record, 1.2.3 DNS error subdomain");
-
-    ($matches) = $dmarc->fetch_dmarc_record('servfail.dmarc-qa.com');
-    eval { $policy = $dmarc->policy->parse( $matches->[0] ) } if scalar @$matches;
-    cmp_ok( $policy->p, 'eq', 'none', "fetch_dmarc_record, 1.2.3 DNS srvfail");
-
     ($matches) = $dmarc->fetch_dmarc_record('com');
     is_deeply( $matches, [], 'fetch_dmarc_record, 1.2.4 TLD lookup not allowed' );
-
-    ($matches) = $dmarc->fetch_dmarc_record('cn.dmarc-qa.com');
-    eval { $policy = $dmarc->policy->parse( $matches->[0] ) } if scalar @$matches;
-    cmp_ok( $policy->p, 'eq', 'reject', "fetch_dmarc_record, 1.2.5 CNAME results in Org match");
-
-    ($matches) = $dmarc->fetch_dmarc_record('unrelated.dmarc-qa.com');
-    eval { $policy = $dmarc->policy->parse( $matches->[0] ) } if scalar @$matches;
-    cmp_ok( $policy->p, 'eq', 'reject', "fetch_dmarc_record, 1.3.1 unrelated TXT");
-
-    ($matches) = $dmarc->fetch_dmarc_record('mixed.dmarc-qa.com');
-    eval { $policy = $dmarc->policy->parse( $matches->[0] ) } if scalar @$matches;
-    cmp_ok( $policy->p, 'eq', 'none', "fetch_dmarc_record, 1.3.1 mixed TXT");
 
     #warn Dumper($matches);
 }
